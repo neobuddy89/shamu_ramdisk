@@ -1,0 +1,86 @@
+BB=/sbin/busybox;
+DEVICE=/res/synapse/files/hammerhead.sh;
+
+case $1 in
+	SCALINGFREQ)
+		FREQMAX_0="$(expr `cat /sys/kernel/msm_limiter/live_max_freq_0` / 1000)MHz"
+		FREQMIN_0="$(expr `cat /sys/kernel/msm_limiter/live_min_freq_0` / 1000)MHz"
+		FREQMAX_1="$(expr `cat /sys/kernel/msm_limiter/live_max_freq_1` / 1000)MHz"
+		FREQMIN_1="$(expr `cat /sys/kernel/msm_limiter/live_min_freq_1` / 1000)MHz"
+		FREQMAX_2="$(expr `cat /sys/kernel/msm_limiter/live_max_freq_2` / 1000)MHz"
+		FREQMIN_2="$(expr `cat /sys/kernel/msm_limiter/live_min_freq_2` / 1000)MHz"
+		FREQMAX_3="$(expr `cat /sys/kernel/msm_limiter/live_max_freq_3` / 1000)MHz"
+		FREQMIN_3="$(expr `cat /sys/kernel/msm_limiter/live_min_freq_3` / 1000)MHz"
+		echo CPU0 - $FREQMAX_0 : $FREQMIN_0@nCPU1 - $FREQMAX_1 : $FREQMIN_1@nCPU2 - $FREQMAX_2 : $FREQMIN_2@nCPU3 - $FREQMAX_3 : $FREQMIN_3
+	;;
+	KSMStats)
+		KSM="$(expr `cat /sys/kernel/mm/ksm/run`)"
+		if [ KSM -eq "1" ]; then
+			SAVEDMEM=`echo "Saved memory: $((\`cat /sys/kernel/mm/ksm/pages_sharing\`*4096/1024/1024)) MB"`
+			SHARDMEM=`echo "Shared memory: $((\`cat /sys/kernel/mm/ksm/pages_shared\`*4096/1024/1024)) MB"`
+			echo $SAVEDMEM@n$SHARDMEM
+		else
+			echo KSM is Disabled.
+		fi
+	;;
+	PVSbin)
+		if [ -e /sys/module/clock_krait_8974/parameters/table_name ]; then
+			PVS="$(expr `cat /sys/module/clock_krait_8974/parameters/table_name`)"
+			echo $PVS
+		elif [ -e /sys/module/acpuclock_krait/parameters/pvs_number ]; then
+			PVS="$(expr `cat /sys/module/acpuclock_krait/parameters/pvs_number`)"
+			echo $PVS
+		else
+			echo PVS bin not found.
+		fi
+	;;
+	CORESTATUS)
+		CORE_0="$(expr `cat /sys/kernel/msm_limiter/live_cur_freq_0` / 1000)MHz"
+		CORE_1="$(expr `cat /sys/kernel/msm_limiter/live_cur_freq_1` / 1000)MHz"
+		CORE_2="$(expr `cat /sys/kernel/msm_limiter/live_cur_freq_2` / 1000)MHz"
+		CORE_3="$(expr `cat /sys/kernel/msm_limiter/live_cur_freq_3` / 1000)MHz"
+		if [ $CORE_1 == "0MHz" ]; then
+			CORE_1=Offline
+		fi
+		if [ $CORE_2 == "0MHz" ]; then
+			CORE_2=Offline
+		fi
+		if [ $CORE_3 == "0MHz" ]; then
+			CORE_3=Offline
+		fi
+		echo CPU0: $CORE_0@nCPU1: $CORE_1@nCPU2: $CORE_2@nCPU3: $CORE_3
+	;;
+	BatteryTemperature)
+		$BB echo `sh $DEVICE LiveBatteryTemperature`;
+	;;
+	Bootloader)
+		$BB echo `sh $DEVICE LiveBootloader`;
+	;;
+	CPUBWFrequency)
+		$BB echo `sh $DEVICE LiveCPUBWFrequency`;
+	;;
+	CPUFrequency)
+		$BB echo `sh $DEVICE LiveCPUFrequency`;
+	;;
+	CPUTemperature)
+		$BB echo `sh $DEVICE LiveCPUTemperature`;
+	;;
+	GPUFrequency)
+		$BB echo `sh $DEVICE LiveGPUFrequency`;
+	;;
+	Memory)
+		$BB echo `sh $DEVICE LiveMemory`;
+	;;
+	Time)
+		$BB echo `sh $DEVICE LiveTime $2 $3`;
+	;;
+	UpTime)
+		$BB echo `sh $DEVICE LiveUpTime`;
+	;;
+	UnUsed)
+		$BB echo `sh $DEVICE LiveUnUsed`;
+	;;
+	WakelocksKernel)
+		$BB echo `sh $DEVICE LiveWakelocksKernel`;
+	;;
+esac

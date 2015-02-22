@@ -1,0 +1,195 @@
+#!/sbin/busybox sh
+
+cat << CTAG
+{
+    name:MISC,
+    elements:[
+		{ STitleBar:{
+			title:"Backlight Dimmer"
+		}},
+		{ SCheckBox:{
+			label:"Enable",
+			description:"Backlight dimmer allows you to adjust the LCD screen brightness lower than is possible with stock. Be careful, you can lower the brightness so much you can barely see it.",
+			default:0,
+			action:"boolean /sys/module/lm3630_bl/parameters/backlight_dimmer",
+		}},
+		{ SSeekBar:{
+			title:"Backlight Dimmer Threshold",
+			description:"Sets threshold value for backlight dimmer.",
+			min:0, max:50, default:15,
+			action:"generic /sys/module/lm3630_bl/parameters/backlight_threshold",
+		}},
+		{ SSeekBar:{
+			title:"Backlight Dimmer Offset",
+			description:"Sets offset value for backlight dimmer.",
+			min:0, max:50, default:0,
+			action:"generic /sys/module/lm3630_bl/parameters/backlight_offset",
+		}},
+		`[ -d "/sys/module/pm_8x60" ] && PM=/sys/module/pm_8x60;
+		[ -d "/sys/module/msm_pm" ] && PM=/sys/module/msm_pm;
+		
+		if [ -d "$PM/modes/cpu0" ]; then
+			$BB echo '{ SPane:{
+				title:"Krait C-States Settings"
+			}},'
+			if [ -f "$PM/modes/cpu0/wfi/idle_enabled" ]; then
+			C0=\`$BB cat $PM/modes/cpu0/wfi/idle_enabled\`;
+				$BB echo '{ SCheckBox:{
+					description:"Shallowest Sleep with instant wake up.",
+					label:"C0 (WFI)",
+					default:'$C0',
+					action:"socset '$PM'/modes/cpu0/wfi/idle_enabled wfi"
+				}},'
+			fi
+			if [ -f "$PM/modes/cpu0/retention/idle_enabled" ]; then
+			C1=\`$BB cat $PM/modes/cpu0/retention/idle_enabled\`;
+				$BB echo '{ SCheckBox:{
+					description:"Slightly deeper sleep with slight latency when waking up. (Disable this if you encounter screen flickering)",
+					label:"C1 (Retention)",
+					default:'$C1',
+					action:"socset '$PM'/modes/cpu0/retention/idle_enabled retention"
+				}},'
+			fi
+			if [ -f "$PM/modes/cpu0/standalone_power_collapse/idle_enabled" ]; then
+			C2=\`$BB cat $PM/modes/cpu0/standalone_power_collapse/idle_enabled\`;
+				$BB echo '{ SCheckBox:{
+					description:"Deeper sleep with longer latency when waking up.",
+					label:"C2 (Stand Alone Power Collapse)",
+					default:'$C2',
+					action:"socset '$PM'/modes/cpu0/standalone_power_collapse/idle_enabled standalone_power_collapse"
+				}},'
+			fi
+			if [ -f "$PM/modes/cpu0/power_collapse/idle_enabled" ]; then
+			C3=\`$BB cat $PM/modes/cpu0/power_collapse/idle_enabled\`;
+				$BB echo '{ SCheckBox:{
+					description:"Really deep sleep with longest latency when waking up.",
+					label:"C3 (Power Collapse)",
+					default:'$C3',
+					action:"socset '$PM'/modes/cpu0/power_collapse/idle_enabled power_collapse"
+				}},'
+			fi
+		fi`
+		`if [ -f "/sys/kernel/fast_charge/fast_charge_level" ]; then
+		FCL=\`$BB cat /sys/kernel/fast_charge/fast_charge_level\`
+			$BB echo '{ SPane:{
+			title:"USB Fast Charge"
+			}},
+				{ SSeekBar:{
+					title:"Fast Charge Level",
+					description:"Fast charge level sets max allowed current to the device. If your power source is not capable of providing sufficient current, this control will be rendered useless. 1200mA is AC value and max recommended value. WARNING: Use this at own discretion. Do not overcharge keeping this enabled at higher values.",
+					default:'$FCL',
+					action:"generic /sys/kernel/fast_charge/fast_charge_level",
+					values:{ 0:"Disabled",'
+						for CHARGE in \`$BB cat /sys/kernel/fast_charge/available_charge_levels\`; do
+							$BB echo "$CHARGE:\"${CHARGE} mA\", ";
+						done;
+					$BB echo '}
+				}},'
+		fi`
+		{ STitleBar:{
+			title:"TCP Congestion Control"
+		}},
+			{ SOptionList:{
+				description:"Set the algorithm of internet congestion avoidance, to possibly improve speeds and load times. More info: <a href='https://en.wikipedia.org/wiki/TCP_congestion-avoidance_algorithm'>HERE</a>",
+				default:`$BB cat \`sh $DEVICE DirTCPCongestion\``,
+				action:"generic `sh $DEVICE DirTCPCongestion`",
+				values:[
+					`sh $DEVICE TCPCongestionList`
+				]
+			}},
+		`if [ -f "/sys/class/timed_output/vibrator/amp" ]; then
+		VIBRATOR=\`$BB cat /sys/class/timed_output/vibrator/amp\`
+			$BB echo '{ SPane:{
+				title:"Vibrator Strength"
+			}},
+				{ SSeekBar:{
+					description:"Allows to set the intensity of the vibrator.",
+					unit:"%",
+					step:1,
+					min:0,
+					max:100,
+					default:'$VIBRATOR',
+					action:"generic /sys/class/timed_output/vibrator/amp"
+				}},'
+		fi`
+		`if [ -f "/sys/module/leds_qpnp/parameters/charging_led" ]; then
+		CLED=\`$BB cat /sys/module/leds_qpnp/parameters/charging_led\`
+			$BB echo '{ SPane:{
+				title:"Charging LED"
+			}},
+				{ SCheckBox:{
+					label:"Enable",
+					description:"Allows to set always-on LED while charging device. LED color will depend on battery level. Unplug and then plug charger to see effect.",
+					default:'$CLED',
+					action:"generic /sys/module/leds_qpnp/parameters/charging_led",
+				}},'
+		fi`
+		`if [ -d "/sys/class/leds_0" ]; then
+			$BB echo '{ SPane:{
+				title:"LED Control",
+				description:"Kernel trigger for LEDs. Using this might interfere with OS level LED management and vice versa.",
+			}},'
+			if [ -f "/sys/class/leds/blue/trigger" ]; then
+				$BB echo '{ SOptionList:{
+					title:"Blue",
+					default:none,
+					action:"bracket-option /sys/class/leds/blue/trigger",
+					values:['
+						for LEDS in \`$BB cat /sys/class/leds/blue/trigger | $BB sed -e "s/\]//;s/\[//"\`; do
+							$BB echo "\"$LEDS\",";
+						done;
+					$BB echo ']
+				}},'
+			fi
+			if [ -f "/sys/class/leds/green/trigger" ]; then
+				$BB echo '{ SOptionList:{
+					title:"Green",
+					default:none,
+					action:"bracket-option /sys/class/leds/green/trigger",
+					values:['
+						for LEDS in \`$BB cat /sys/class/leds/green/trigger | $BB sed -e "s/\]//;s/\[//"\`; do
+							$BB echo "\"$LEDS\",";
+						done;
+					$BB echo ']
+				}},'
+			fi
+			if [ -f "/sys/class/leds/red/trigger" ]; then
+				$BB echo '{ SOptionList:{
+					title:"Red",
+					default:none,
+					action:"bracket-option /sys/class/leds/red/trigger",
+					values:['
+						for LEDS in \`$BB cat /sys/class/leds/red/trigger | $BB sed -e "s/\]//;s/\[//"\`; do
+							$BB echo "\"$LEDS\",";
+						done;
+					$BB echo ']
+				}},'
+			fi
+			if [ -f "/sys/class/leds/lcd-backlight/trigger" ]; then
+				$BB echo '{ SOptionList:{
+					title:"LCD Backlight",
+					default:none,
+					action:"bracket-option /sys/class/leds/lcd-backlight/trigger",
+					values:['
+						for LEDS in \`$BB cat /sys/class/leds/lcd-backlight/trigger | $BB sed -e "s/\]//;s/\[//"\`; do
+							$BB echo "\"$LEDS\",";
+						done;
+					$BB echo ']
+				}},'
+			fi
+			if [ -f "/sys/class/leds/spotlight/trigger" ]; then
+				$BB echo '{ SOptionList:{
+					title:"Spotlight",
+					default:none,
+					action:"bracket-option /sys/class/leds/spotlight/trigger",
+					values:['
+						for LEDS in \`$BB cat /sys/class/leds/spotlight/trigger | $BB sed -e "s/\]//;s/\[//"\`; do
+							$BB echo "\"$LEDS\",";
+						done;
+					$BB echo ']
+				}},'
+			fi
+		fi`
+    ]
+}
+CTAG
