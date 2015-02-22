@@ -4,27 +4,6 @@ cat << CTAG
 {
     name:MISC,
     elements:[
-		{ STitleBar:{
-			title:"Backlight Dimmer"
-		}},
-		{ SCheckBox:{
-			label:"Enable",
-			description:"Backlight dimmer allows you to adjust the LCD screen brightness lower than is possible with stock. Be careful, you can lower the brightness so much you can barely see it.",
-			default:0,
-			action:"boolean /sys/module/lm3630_bl/parameters/backlight_dimmer",
-		}},
-		{ SSeekBar:{
-			title:"Backlight Dimmer Threshold",
-			description:"Sets threshold value for backlight dimmer.",
-			min:0, max:50, default:15,
-			action:"generic /sys/module/lm3630_bl/parameters/backlight_threshold",
-		}},
-		{ SSeekBar:{
-			title:"Backlight Dimmer Offset",
-			description:"Sets offset value for backlight dimmer.",
-			min:0, max:50, default:0,
-			action:"generic /sys/module/lm3630_bl/parameters/backlight_offset",
-		}},
 		`[ -d "/sys/module/pm_8x60" ] && PM=/sys/module/pm_8x60;
 		[ -d "/sys/module/msm_pm" ] && PM=/sys/module/msm_pm;
 		

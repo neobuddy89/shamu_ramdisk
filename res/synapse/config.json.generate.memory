@@ -140,9 +140,9 @@ cat << CTAG
 					$BB echo '{ SSeekBar:{
 						title:"Extra Free Kilobytes",
 						unit:" kB",
-						step:50,
+						step:10,
 						min:0,
-						max:30000,
+						max:50000,
 						default:'\`$BB cat /proc/sys/vm/extra_free_kbytes\`',
 						action:"generic /proc/sys/vm/extra_free_kbytes"
 					}},'

@@ -110,7 +110,7 @@ case "$1" in
 		done;
 	;;
 	HasBootloader)
-		$BB echo "1";
+		$BB echo "0";
 	;;
 	HasHeadphonePowerAmp)
 		$BB echo "2";

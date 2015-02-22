@@ -1,5 +1,5 @@
 BB=/sbin/busybox;
-DEVICE=/res/synapse/files/hammerhead.sh;
+DEVICE=/res/synapse/files/shamu.sh;
 
 case $1 in
 	`sh $DEVICE DirGPUMinPwrLevel`)

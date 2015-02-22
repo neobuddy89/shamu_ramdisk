@@ -1,7 +1,7 @@
 #!/sbin/busybox sh
 
 BB=/sbin/busybox;
-DEVICE=`sh /res/synapse/files/hammerhead.sh`;
+DEVICE=`sh /res/synapse/files/shamu.sh`;
 
 UCI_CONFIG=/res/synapse/config.json;
 UCI_ACTION=/res/synapse/actions/;

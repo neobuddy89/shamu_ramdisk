@@ -1,5 +1,5 @@
 BB=/sbin/busybox;
-DEVICE=/res/synapse/files/hammerhead.sh;
+DEVICE=/res/synapse/files/shamu.sh;
 
 # BASE_HP_PA_GAIN=22; #Nexus 4
 BASE_HP_PA_GAIN=38; #Nexus 5
