@@ -3,14 +3,14 @@ DEVICE=/res/synapse/files/shamu.sh;
 
 case $1 in
 	SCALINGFREQ)
-		FREQMAX_0="$(expr `cat /sys/kernel/msm_limiter/live_max_freq_0` / 1000)MHz"
-		FREQMIN_0="$(expr `cat /sys/kernel/msm_limiter/live_min_freq_0` / 1000)MHz"
-		FREQMAX_1="$(expr `cat /sys/kernel/msm_limiter/live_max_freq_1` / 1000)MHz"
-		FREQMIN_1="$(expr `cat /sys/kernel/msm_limiter/live_min_freq_1` / 1000)MHz"
-		FREQMAX_2="$(expr `cat /sys/kernel/msm_limiter/live_max_freq_2` / 1000)MHz"
-		FREQMIN_2="$(expr `cat /sys/kernel/msm_limiter/live_min_freq_2` / 1000)MHz"
-		FREQMAX_3="$(expr `cat /sys/kernel/msm_limiter/live_max_freq_3` / 1000)MHz"
-		FREQMIN_3="$(expr `cat /sys/kernel/msm_limiter/live_min_freq_3` / 1000)MHz"
+		FREQMAX_0="$(expr `cat /sys/module/msm_limiter/live_max_freq_0` / 1000)MHz"
+		FREQMIN_0="$(expr `cat /sys/module/msm_limiter/live_min_freq_0` / 1000)MHz"
+		FREQMAX_1="$(expr `cat /sys/module/msm_limiter/live_max_freq_1` / 1000)MHz"
+		FREQMIN_1="$(expr `cat /sys/module/msm_limiter/live_min_freq_1` / 1000)MHz"
+		FREQMAX_2="$(expr `cat /sys/module/msm_limiter/live_max_freq_2` / 1000)MHz"
+		FREQMIN_2="$(expr `cat /sys/module/msm_limiter/live_min_freq_2` / 1000)MHz"
+		FREQMAX_3="$(expr `cat /sys/module/msm_limiter/live_max_freq_3` / 1000)MHz"
+		FREQMIN_3="$(expr `cat /sys/module/msm_limiter/live_min_freq_3` / 1000)MHz"
 		echo CPU0 - $FREQMAX_0 : $FREQMIN_0@nCPU1 - $FREQMAX_1 : $FREQMIN_1@nCPU2 - $FREQMAX_2 : $FREQMIN_2@nCPU3 - $FREQMAX_3 : $FREQMIN_3
 	;;
 	KSMStats)
@@ -35,10 +35,10 @@ case $1 in
 		fi
 	;;
 	CORESTATUS)
-		CORE_0="$(expr `cat /sys/kernel/msm_limiter/live_cur_freq_0` / 1000)MHz"
-		CORE_1="$(expr `cat /sys/kernel/msm_limiter/live_cur_freq_1` / 1000)MHz"
-		CORE_2="$(expr `cat /sys/kernel/msm_limiter/live_cur_freq_2` / 1000)MHz"
-		CORE_3="$(expr `cat /sys/kernel/msm_limiter/live_cur_freq_3` / 1000)MHz"
+		CORE_0="$(expr `cat /sys/module/msm_limiter/live_cur_freq_0` / 1000)MHz"
+		CORE_1="$(expr `cat /sys/module/msm_limiter/live_cur_freq_1` / 1000)MHz"
+		CORE_2="$(expr `cat /sys/module/msm_limiter/live_cur_freq_2` / 1000)MHz"
+		CORE_3="$(expr `cat /sys/module/msm_limiter/live_cur_freq_3` / 1000)MHz"
 		if [ $CORE_1 == "0MHz" ]; then
 			CORE_1=Offline
 		fi

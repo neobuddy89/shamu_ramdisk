@@ -1,7 +1,3 @@
-#!/sbin/busybox sh
-
-MPS='0:"Disabled", 1:"1", 2:"2"'
-
 cat << CTAG
 {
     name:CPU,
@@ -18,14 +14,14 @@ cat << CTAG
 	{ SCheckBox:{
 		label:"Enable",
 		description:"This enables overriding of current CPU Max/Min Frequency. It also set CPU Max Frequency whenever device resumes and suspends and set CPU Min Frequency whenever device suspends. Below controls will work ONLY if MSM Limiter driver is enabled. Ideal max frequency should always be higher than min frequency and input boost frequency. Ideal min frequency should be lesser than max frequency, max screen off frequency and input boost frequency.",
-		default:`cat /sys/kernel/msm_limiter/limiter_enabled`,
-		action:"generic /sys/kernel/msm_limiter/limiter_enabled",
+		default:`cat /sys/module/msm_limiter/limiter_enabled`,
+		action:"generic /sys/module/msm_limiter/limiter_enabled",
 	}},
 	{ SSeekBar:{
        		title:"CPU0 Max Frequency",
 		description:"Set the maximum frequency the CPU0 scales up to. CPU0 is used for most critical kernel tasks, it is recommended not to reduce this frequency below 1.7 GHz,",
-		default:`cat /sys/kernel/msm_limiter/resume_max_freq_0`,
-		action:"generic /sys/kernel/msm_limiter/resume_max_freq_0",
+		default:`cat /sys/module/msm_limiter/resume_max_freq_0`,
+		action:"generic /sys/module/msm_limiter/resume_max_freq_0",
 		values:{
 `
 			while read FREQ TIME; do
@@ -38,8 +34,8 @@ cat << CTAG
 	{ SSeekBar:{
        		title:"CPU1 Max Frequency",
 		description:"Set the maximum frequency the CPU1 scales up to.",
-		default:`cat /sys/kernel/msm_limiter/resume_max_freq_1`,
-		action:"generic /sys/kernel/msm_limiter/resume_max_freq_1",
+		default:`cat /sys/module/msm_limiter/resume_max_freq_1`,
+		action:"generic /sys/module/msm_limiter/resume_max_freq_1",
 		values:{
 `
 			while read FREQ TIME; do
@@ -52,8 +48,8 @@ cat << CTAG
 	{ SSeekBar:{
        		title:"CPU2 Max Frequency",
 		description:"Set the maximum frequency the CPU2 scales up to.",
-		default:`cat /sys/kernel/msm_limiter/resume_max_freq_2`,
-		action:"generic /sys/kernel/msm_limiter/resume_max_freq_2",
+		default:`cat /sys/module/msm_limiter/resume_max_freq_2`,
+		action:"generic /sys/module/msm_limiter/resume_max_freq_2",
 		values:{
 `
 			while read FREQ TIME; do
@@ -66,8 +62,8 @@ cat << CTAG
 	{ SSeekBar:{
        		title:"CPU3 Max Frequency",
 		description:"Set the maximum frequency the CPU3 scales up to.",
-		default:`cat /sys/kernel/msm_limiter/resume_max_freq_3`,
-		action:"generic /sys/kernel/msm_limiter/resume_max_freq_3",
+		default:`cat /sys/module/msm_limiter/resume_max_freq_3`,
+		action:"generic /sys/module/msm_limiter/resume_max_freq_3",
 		values:{
 `
 			while read FREQ TIME; do
@@ -80,8 +76,8 @@ cat << CTAG
 	{ SSeekBar:{
        		title:"CPU Max Screen Off Frequency",
 		description:"Set the maximum frequency all CPUs scales up to when device is suspended.",
-		default:`cat /sys/kernel/msm_limiter/suspend_max_freq`,,
-		action:"generic /sys/kernel/msm_limiter/suspend_max_freq",
+		default:`cat /sys/module/msm_limiter/suspend_max_freq`,,
+		action:"generic /sys/module/msm_limiter/suspend_max_freq",
 		values:{
 `
 			while read FREQ TIME; do
@@ -94,8 +90,8 @@ cat << CTAG
 	{ SSeekBar:{
        		title:"CPU0 Min Frequency",
 		description:"Set the minimum frequency the CPU0 scales down to.",
-		default:`cat /sys/kernel/msm_limiter/suspend_min_freq_0`,
-		action:"generic /sys/kernel/msm_limiter/suspend_min_freq_0",
+		default:`cat /sys/module/msm_limiter/suspend_min_freq_0`,
+		action:"generic /sys/module/msm_limiter/suspend_min_freq_0",
 		values:{
 `
 			while read FREQ TIME; do
@@ -108,8 +104,8 @@ cat << CTAG
 	{ SSeekBar:{
        		title:"CPU1 Min Frequency",
 		description:"Set the minimum frequency the CPU1 scales down to.",
-		default:`cat /sys/kernel/msm_limiter/suspend_min_freq_1`,
-		action:"generic /sys/kernel/msm_limiter/suspend_min_freq_1",
+		default:`cat /sys/module/msm_limiter/suspend_min_freq_1`,
+		action:"generic /sys/module/msm_limiter/suspend_min_freq_1",
 		values:{
 `
 			while read FREQ TIME; do
@@ -122,8 +118,8 @@ cat << CTAG
 	{ SSeekBar:{
        		title:"CPU2 Min Frequency",
 		description:"Set the minimum frequency the CPU2 scales down to.",
-		default:`cat /sys/kernel/msm_limiter/suspend_min_freq_2`,
-		action:"generic /sys/kernel/msm_limiter/suspend_min_freq_2",
+		default:`cat /sys/module/msm_limiter/suspend_min_freq_2`,
+		action:"generic /sys/module/msm_limiter/suspend_min_freq_2",
 		values:{
 `
 			while read FREQ TIME; do
@@ -136,8 +132,8 @@ cat << CTAG
 	{ SSeekBar:{
        		title:"CPU3 Min Frequency",
 		description:"Set the minimum frequency the CPU3 scales down to.",
-		default:`cat /sys/kernel/msm_limiter/suspend_min_freq_3`,
-		action:"generic /sys/kernel/msm_limiter/suspend_min_freq_3",
+		default:`cat /sys/module/msm_limiter/suspend_min_freq_3`,
+		action:"generic /sys/module/msm_limiter/suspend_min_freq_3",
 		values:{
 `
 			while read FREQ TIME; do
@@ -256,15 +252,6 @@ cat << CTAG
 		action:"boolean /sys/module/cpu_boost/parameters/wakeup_boost",
 	}},
 	{ STitleBar:{
-		title:"Misc Tuning"
-	}},
-	{ SCheckBox:{
-		label:"PE-WQ",
-		description:"Enabling Power-efficient Workqueues will help to reduce power consumption at the cost of slight performance overhead. By enabling this, PE workqueues are used for unbound scheduled work to save load on sibling CPU cores and queuing work on CPU 0.",
-		default:0,
-		action:"boolean /sys/module/workqueue/parameters/power_efficient",
-	}},
-	{ STitleBar:{
 		title:"CPU Governor"
 	}},
 	{ SDescription:{
@@ -272,8 +259,8 @@ cat << CTAG
 	}},
         { SOptionList:{
 		title:"CPU0",
-		default:`cat /sys/kernel/msm_limiter/scaling_governor_0`,
-                action:"generic /sys/kernel/msm_limiter/scaling_governor_0",
+		default:`cat /sys/module/msm_limiter/scaling_governor_0`,
+                action:"generic /sys/module/msm_limiter/scaling_governor_0",
                 values:[
 `
                         for GOVERNOR in \`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors\` ; do
@@ -297,8 +284,8 @@ cat << CTAG
         }},
         { SOptionList:{
 		title:"CPU1",
-		default:`cat /sys/kernel/msm_limiter/scaling_governor_1`,
-                action:"generic /sys/kernel/msm_limiter/scaling_governor_1",
+		default:`cat /sys/module/msm_limiter/scaling_governor_1`,
+                action:"generic /sys/module/msm_limiter/scaling_governor_1",
                 values:[
 `
                         for GOVERNOR in \`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors\` ; do
@@ -321,8 +308,8 @@ cat << CTAG
         }},
 	{ SOptionList:{
 		title:"CPU2",
-		default:`cat /sys/kernel/msm_limiter/scaling_governor_2`,
-                action:"generic /sys/kernel/msm_limiter/scaling_governor_2",
+		default:`cat /sys/module/msm_limiter/scaling_governor_2`,
+                action:"generic /sys/module/msm_limiter/scaling_governor_2",
                 values:[
 `
                         for GOVERNOR in \`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors\` ; do
@@ -345,8 +332,8 @@ cat << CTAG
         }},
 	{ SOptionList:{
 		title:"CPU3",
-		default:`cat /sys/kernel/msm_limiter/scaling_governor_3`,
-                action:"generic /sys/kernel/msm_limiter/scaling_governor_3",
+		default:`cat /sys/module/msm_limiter/scaling_governor_3`,
+                action:"generic /sys/module/msm_limiter/scaling_governor_3",
                 values:[
 `
                         for GOVERNOR in \`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors\` ; do
@@ -408,7 +395,7 @@ cat << CTAG
 				}
 			}
 		},
-		exclude: [ "kset" ]
+		exclude: [ "kset", "stats" ]
 	}},
     ]
 }
