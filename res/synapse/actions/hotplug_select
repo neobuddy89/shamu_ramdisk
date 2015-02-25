@@ -5,7 +5,9 @@ if [[ ! -z $2 ]]; then
 	if [  $2 == "MSM_Hotplug" ]; then
 			stop mpdecision;
 			echo "0" > /sys/devices/system/cpu/cpu0/rq-stats/hotplug_enable;
-			echo "0" > /sys/kernel/intelli_plug/intelli_plug_active;
+			if [ -e /sys/kernel/intelli_plug/intelli_plug_active ]; then
+				echo "0" > /sys/kernel/intelli_plug/intelli_plug_active;
+			fi
 			if [ -e /sys/kernel/msm_mpdecision/conf/enabled ]; then
 				echo "0" > /sys/kernel/msm_mpdecision/conf/enabled;
 			fi
@@ -24,7 +26,9 @@ if [[ ! -z $2 ]]; then
 			stop mpdecision;
 			echo "0" > /sys/devices/system/cpu/cpu0/rq-stats/hotplug_enable;
 			echo "0" > /sys/module/msm_hotplug/msm_enabled;
-			echo "0" > /sys/kernel/intelli_plug/intelli_plug_active;
+			if [ -e /sys/kernel/intelli_plug/intelli_plug_active ]; then
+				echo "0" > /sys/kernel/intelli_plug/intelli_plug_active;
+			fi
 			$BB sleep 1;
 			echo "1" > /sys/kernel/msm_mpdecision/conf/enabled;
 	elif [  $2 == "CyanogenMod" ] &&
@@ -32,7 +36,9 @@ if [[ ! -z $2 ]]; then
 			stop mpdecision;
 			$BB sleep 1;
 			echo "0" > /sys/module/msm_hotplug/msm_enabled;
-			echo "0" > /sys/kernel/intelli_plug/intelli_plug_active;
+			if [ -e /sys/kernel/intelli_plug/intelli_plug_active ]; then
+				echo "0" > /sys/kernel/intelli_plug/intelli_plug_active;
+			fi
 			if [ -e /sys/kernel/msm_mpdecision/conf/enabled ]; then
 				echo "0" > /sys/kernel/msm_mpdecision/conf/enabled;
 			fi
@@ -41,7 +47,9 @@ if [[ ! -z $2 ]]; then
 			start mpdecision --avg_comp;
 	else
 			echo "0" > /sys/devices/system/cpu/cpu0/rq-stats/hotplug_enable;
-			echo "0" > /sys/kernel/intelli_plug/intelli_plug_active;
+			if [ -e /sys/kernel/intelli_plug/intelli_plug_active ]; then
+				echo "0" > /sys/kernel/intelli_plug/intelli_plug_active;
+			fi
 			if [ -e /sys/kernel/msm_mpdecision/conf/enabled ]; then
 				echo "0" > /sys/kernel/msm_mpdecision/conf/enabled;
 			fi
@@ -52,7 +60,7 @@ fi
 
 if [ $(expr `cat /sys/module/msm_hotplug/msm_enabled`) -eq "1" ]; then
 	echo "MSM_Hotplug"
-elif [ $(expr `cat /sys/kernel/intelli_plug/intelli_plug_active`) -eq "1" ]; then
+elif [ -e /sys/kernel/intelli_plug/intelli_plug_active ] && [ $(expr `cat /sys/kernel/intelli_plug/intelli_plug_active`) -eq "1" ]; then
 	echo "Intelli_Hotplug"
 elif [ -e /sys/kernel/msm_mpdecision/conf/enabled ] && [ $(expr `cat /sys/kernel/msm_mpdecision/conf/enabled`) -eq "1" ]; then
 	echo "Bricked_Hotplug"
@@ -60,7 +68,9 @@ elif [ "`ps | $BB grep mpdecision`" ] && [ $(expr `cat /sys/devices/system/cpu/c
 	echo "CyanogenMod"
 else
 	echo "0" > /sys/devices/system/cpu/cpu0/rq-stats/hotplug_enable;
-	echo "0" > /sys/kernel/intelli_plug/intelli_plug_active;
+	if [ -e /sys/kernel/intelli_plug/intelli_plug_active ]; then
+		echo "0" > /sys/kernel/intelli_plug/intelli_plug_active;
+	fi
 	if [ -e /sys/kernel/msm_mpdecision/conf/enabled ]; then
 		echo "0" > /sys/kernel/msm_mpdecision/conf/enabled;
 	fi
