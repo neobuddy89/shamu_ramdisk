@@ -30,5 +30,11 @@ echo "Boot initiated on $(date)" > /tmp/bootcheck;
 echo "1536,2048,4096,16384,28672,32768" > /sys/module/lowmemorykiller/parameters/minfree
 echo 32 > /sys/module/lowmemorykiller/parameters/cost
 
+# Calibrate display
+echo "250 250 255" > /sys/devices/platform/kcal_ctrl.0/kcal
+echo 243 > /sys/devices/platform/kcal_ctrl.0/kcal_sat
+echo 1515 > /sys/devices/platform/kcal_ctrl.0/kcal_hue
+echo 250 > /sys/devices/platform/kcal_ctrl.0/kcal_val
+
 ln -s /res/synapse/uci /sbin/uci
 /sbin/uci
