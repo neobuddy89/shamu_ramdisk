@@ -251,6 +251,15 @@ cat << CTAG
 		default:0,
 		action:"boolean /sys/module/cpu_boost/parameters/wakeup_boost",
 	}},
+	{ SPane:{
+		title:"Power-efficient Workqueues",
+	}},
+	{ SCheckBox:{
+		label:"Enable",
+		description:"This will help to reduce power consumption at the cost of slight performance overhead. PE workqueues are used for unbound scheduled work to save load on sibling CPU cores and queuing work on CPU0.",
+		default:1,
+		action:"boolean /sys/module/workqueue/parameters/power_efficient",
+	}},
 	{ STitleBar:{
 		title:"CPU Governor"
 	}},
