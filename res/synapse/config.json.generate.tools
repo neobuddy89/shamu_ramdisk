@@ -19,6 +19,15 @@ cat << CTAG
 					values:[ Enforcing, Permissive
 					],
 				}},
+			`if [ -f "/sys/module/selinux/parameters/force_audit" ]; then
+				FAUDIT=\`bool /sys/module/selinux/parameters/force_audit\`;
+					$BB echo '{ SCheckBox:{
+						label:"Force Audit",
+						description:"Enable for debugging SELinux driver.",
+						default:'$FAUDIT',
+						action:"boolean /sys/module/selinux/parameters/force_audit"
+					}},'
+			fi`
 			`DB=/data/data/com.android.providers.settings/databases;
 			cd $DB;
 			VALUE=\`/res/synapse/files/sqlite3 settings.db "SELECT value FROM global WHERE name = 'preferred_network_mode';" 2> /dev/null\`;
