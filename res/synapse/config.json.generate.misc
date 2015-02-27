@@ -76,19 +76,18 @@ cat << CTAG
 					`sh $DEVICE TCPCongestionList`
 				]
 			}},
-		`if [ -f "/sys/class/timed_output/vibrator/amp" ]; then
-		VIBRATOR=\`$BB cat /sys/class/timed_output/vibrator/amp\`
+		`if [ -f "sys/vibrator/pwmvalue" ]; then
+		VIBRATOR=\`$BB cat /sys/vibrator/pwmvalue\`
 			$BB echo '{ SPane:{
 				title:"Vibrator Strength"
 			}},
 				{ SSeekBar:{
 					description:"Allows to set the intensity of the vibrator.",
-					unit:"%",
 					step:1,
 					min:0,
-					max:100,
+					max:127,
 					default:'$VIBRATOR',
-					action:"generic /sys/class/timed_output/vibrator/amp"
+					action:"generic sys/vibrator/pwmvalue"
 				}},'
 		fi`
 		`if [ -f "/sys/module/leds_qpnp/parameters/charging_led" ]; then
