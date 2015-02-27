@@ -73,12 +73,11 @@ cat << CTAG
 			DT2W=\`$BB cat /sys/android_touch/doubletap2wake\`
 				$BB echo '{ SPane:{
 					title:"DoubleTap2Wake",
-					description:"Allows you to wake the device by double tapping the screen (Causes more battery drain while in pocket). NOTE: Some of these profiles may not be available in your kernel.",
 				}},
-					{ SOptionList:{
+					{ SCheckBox:{
+						label:"DT2W",
+						description:"Allows you to wake the device by double tapping the screen (Causes more battery drain while in pocket). NOTE: Some of these profiles may not be available in your kernel.",
 						default:'$DT2W',
-						values:{ 0:"Disabled", 1:"Center (Default)", 2:"Full"
-						},
 						action:"wake /sys/android_touch/doubletap2wake"
 					}},'
 			fi`
@@ -99,25 +98,27 @@ cat << CTAG
 			`if [ -f "/sys/android_touch/sweep2wake" ]; then
 			S2W=\`$BB cat /sys/android_touch/sweep2wake"\`
 				$BB echo '{ SPane:{
-					title:"Sweep2Wake"
+					title:"Sweep2Wake",
+					description:"Allows you to wake the device by swiping on the navigation bar (Causes more battery drain while in pocket).",
 				}},
-					{ SCheckBox:{
-						label:"Enable",
-						description:"Allows you to wake the device by swiping on the navigation bar (Causes more battery drain while in pocket).",
+					{ SOptionList:{
 						default:'$S2W',
+						values:{ 0:"Disabled", 1:"Sweep Right", 2:"Sweep Left", 4:"Sweep Up", 8:"Sweep Down", 15:"Sweep Any"
+						},
 						action:"wake /sys/android_touch/sweep2wake"
 					}},'
 			fi`
-			`if [ -f "/sys/android_touch/s2w_s2sonly" ]; then
-			S2S=\`$BB cat /sys/android_touch/s2w_s2sonly\`
+			`if [ -f "/sys/android_touch/sweep2sleep" ]; then
+			S2S=\`$BB cat /sys/android_touch/sweep2sleep\`
 				$BB echo '{ SPane:{
-					title:"Sweep2Sleep"
+					title:"Sweep2Sleep",
+					description:"Allows you to turn the screen off by swiping on the navigation bar.",
 				}},
-					{ SCheckBox:{
-						label:"Enable",
-						description:"Allows you to turn the screen off by swiping on the navigation bar.",
+					{ SOptionList:{
 						default:'$S2S',
-						action:"wake /sys/android_touch/s2w_s2sonly"
+						values:{ 0:"Disabled", 1:"Sweep Right", 2:"Sweep Left", 3:"Sweep Left or Right"
+						},
+						action:"wake /sys/android_touch/sweep2sleep"
 					}},'
 			fi`
 			`if [ -f "/sys/android_touch/sweep2dim" ]; then
@@ -163,18 +164,6 @@ cat << CTAG
 						description:"Enabling this makes sweep2wake work with a shorter sweep distance.",
 						default:'$SSWEEP',
 						action:"wake /sys/android_touch/shortsweep"
-					}},'
-			fi`
-			`if [ -f "/sys/android_touch/sweep2sleep" ]; then
-			S2S=\`$BB cat /sys/android_touch/sweep2sleep\`
-				$BB echo '{ SPane:{
-					title:"Sweep2Sleep"
-				}},
-					{ SCheckBox:{
-						label:"Enable",
-						description:"Allows you to turn the screen off by swiping on the navigation bar.",
-						default:'$S2S',
-						action:"wake /sys/android_touch/sweep2sleep"
 					}},'
 			fi`
 			`if [ -f "/sys/android_touch/orientation" ]; then
