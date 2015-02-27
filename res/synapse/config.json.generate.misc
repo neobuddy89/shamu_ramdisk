@@ -168,6 +168,24 @@ cat << CTAG
 				}},'
 			fi
 		fi`
+		`if [ -f "/sys/module/wakeup/parameters/enable_si_ws" ]; then
+			WS=\`bool /sys/module/wakeup/parameters/enable_si_ws\`
+			HWS=\`bool /sys/module/wakeup/parameters/enable_msm_hsic_ws\`
+				$BB echo '{ SPane:{
+					title:"Wakeup Sources",
+					description:"Disable wakeup sources to reduce wake locks. Leave them to default values if unsure.",
+				}},
+					{ SCheckBox:{
+						label:"Enable sensor_ind wakeup source",
+						default:'$WS',
+						action:"boolean /sys/module/wakeup/parameters/enable_si_ws"
+					}},
+					{ SCheckBox:{
+						label:"Enable msm_hsic_host wakeup source",
+						default:'$HWS',
+						action:"boolean /sys/module/wakeup/parameters/enable_msm_hsic_ws"
+					}},'
+		fi`
     ]
 }
 CTAG
