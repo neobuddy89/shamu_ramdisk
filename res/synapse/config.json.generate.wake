@@ -6,7 +6,7 @@ cat << CTAG
 			DT2W=\`$BB cat /sys/devices/virtual/input/lge_touch/dt_wake_enabled\`
 				$BB echo '{ SPane:{
 					title:"DoubleTap2Wake",
-					description:"Allows you to wake the device by double tapping the screen (Causes more battery drain while in pocket). NOTE: Some of these profiles may not be available in your kernel.",
+					description:"Allows you to wake the device by double tapping the screen (Causes more battery drain while in pocket).",
 				}},
 					{ SOptionList:{
 						default:'$DT2W',
