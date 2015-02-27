@@ -76,7 +76,7 @@ cat << CTAG
 				}},
 					{ SCheckBox:{
 						label:"DT2W",
-						description:"Allows you to wake the device by double tapping the screen (Causes more battery drain while in pocket). NOTE: Some of these profiles may not be available in your kernel.",
+						description:"Allows you to wake the device by double tapping the screen (Causes more battery drain while in pocket).",
 						default:'$DT2W',
 						action:"wake /sys/android_touch/doubletap2wake"
 					}},'
