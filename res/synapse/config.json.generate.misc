@@ -48,21 +48,16 @@ cat << CTAG
 				}},'
 			fi
 		fi`
-		`if [ -f "/sys/kernel/fast_charge/fast_charge_level" ]; then
-		FCL=\`$BB cat /sys/kernel/fast_charge/fast_charge_level\`
+		`if [ -f "/sys/kernel/fast_charge/force_fast_charge" ] && [ ! -f "/sys/kernel/fast_charge/fast_charge_level" ]; then
+			FC=\`$BB cat /sys/kernel/fast_charge/force_fast_charge\`
 			$BB echo '{ SPane:{
 			title:"USB Fast Charge"
 			}},
-				{ SSeekBar:{
-					title:"Fast Charge Level",
-					description:"Fast charge level sets max allowed current to the device. If your power source is not capable of providing sufficient current, this control will be rendered useless. 1200mA is AC value and max recommended value. WARNING: Use this at own discretion. Do not overcharge keeping this enabled at higher values.",
-					default:'$FCL',
-					action:"generic /sys/kernel/fast_charge/fast_charge_level",
-					values:{ 0:"Disabled",'
-						for CHARGE in \`$BB cat /sys/kernel/fast_charge/available_charge_levels\`; do
-							$BB echo "$CHARGE:\"${CHARGE} mA\", ";
-						done;
-					$BB echo '}
+				{ SCheckBox:{
+					label:"Enable",
+					description:"If enabled, device will charge faster when connected through USB.",
+					default:'$FC',
+					action:"generic /sys/kernel/fast_charge/force_fast_charge"
 				}},'
 		fi`
 		{ STitleBar:{
