@@ -4,7 +4,7 @@ DEVICE=/res/synapse/files/shamu.sh;
 # BASE_HP_PA_GAIN=22; #Nexus 4
 BASE_HP_PA_GAIN=38; #Nexus 5
 
-LG_Stock() {
+Stock() {
 CAM_MIC_GAIN="0 255";
 HEADPHONE_GAIN="0 0 255";
 
@@ -69,7 +69,7 @@ if [ -f $1 ]; then
 				$BB echo "$HEADPHONE_GAIN" > /sys/kernel/sound_control_3/gpl_headphone_gain;
 				[ "`sh $DEVICE HasHeadphonePowerAmp`" == "1" ] && $BB echo "$HEADPHONE_PA_GAIN" > /sys/kernel/sound_control_3/gpl_headphone_pa_gain;
 				$BB echo "$MIC_GAIN" > /sys/kernel/sound_control_3/gpl_mic_gain;
-				$BB echo "$SPEAKER_GAIN" > /sys/kernel/sound_control_3/gpl_speaker_gain;
+				# $BB echo "$SPEAKER_GAIN" > /sys/kernel/sound_control_3/gpl_speaker_gain;
 			fi;
 
 		elif [ "$1" == "/sys/kernel/sound_control_3/gpl_cam_mic_gain" ] || [ "$1" == "/sys/kernel/sound_control_3/gpl_mic_gain" ]; then

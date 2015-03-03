@@ -10,15 +10,14 @@ cat << CTAG
 						{ SOptionList:{
 							default:Custom,
 							action:"soundfaux /res/synapse/files/sound_prof",
-							values:[ Custom, LG_Stock, Quality, Loudness, Quiet,
+							values:[ Custom, Stock, Quality, Loudness, Quiet,
 							],
 							notify:[
 								{
 									on:APPLY,
 									do:[ REFRESH, APPLY ],
 									to:[
-										"soundfaux /sys/kernel/sound_control_3/gpl_headphone_gain",
-										"soundfaux /sys/kernel/sound_control_3/gpl_speaker_gain",'
+										"soundfaux /sys/kernel/sound_control_3/gpl_headphone_gain",'
 										[ "\`sh $DEVICE HasHeadphonePowerAmp\`" == "1" ] && $BB echo '"soundfaux /sys/kernel/sound_control_3/gpl_headphone_pa_gain",'
 										$BB echo '"soundfaux /sys/kernel/sound_control_3/gpl_mic_gain",
 										"soundfaux /sys/kernel/sound_control_3/gpl_cam_mic_gain"
@@ -35,13 +34,6 @@ cat << CTAG
 							max:15,
 							default:0,
 							action:"soundfaux /sys/kernel/sound_control_3/gpl_headphone_gain",
-						}},
-						{ SSeekBar:{
-							title:"Speaker",
-							min:-30,
-							max:15,
-							default:4,
-							action:"soundfaux /sys/kernel/sound_control_3/gpl_speaker_gain",
 						}},'
 						if [ "\`sh $DEVICE HasHeadphonePowerAmp\`" == "1" ]; then
 							$BB echo '{ SSeekBar:{

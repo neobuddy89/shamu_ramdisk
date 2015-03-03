@@ -22,9 +22,9 @@ cat << CTAG
 			$BB echo ','
 			. /res/synapse/config.json.generate.gamma
 			$BB echo ','
-			. /res/synapse/config.json.generate.hotplug
-			$BB echo ','
 			. /res/synapse/config.json.generate.gpu
+			$BB echo ','
+			. /res/synapse/config.json.generate.hotplug
 			$BB echo ','
 			. /res/synapse/config.json.generate.io
 			$BB echo ','
