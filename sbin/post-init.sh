@@ -38,3 +38,7 @@ echo 250 > /sys/devices/platform/kcal_ctrl.0/kcal_val
 
 ln -s /res/synapse/uci /sbin/uci
 /sbin/uci
+
+if [ ! -e /data/.selinux_disabled ]; then
+	setenforce 1
+fi;

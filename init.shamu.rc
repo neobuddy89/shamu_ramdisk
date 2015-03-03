@@ -353,9 +353,6 @@ on property:sys.boot_completed=1
     # Hail Hydra!!
     exec /sbin/post-init.sh
 
-    # Set SELinux to enforcing mode
-    setenforce 1
-
 on property:bluetooth.isEnabled=true
     start btwlancoex
     write /sys/class/bluetooth/hci0/idle_timeout 7000
