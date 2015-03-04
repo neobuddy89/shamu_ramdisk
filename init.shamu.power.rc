@@ -1,41 +1,57 @@
 on charger
-    # Enable Power modes and set the CPU Freq Sampling rates
-    write /sys/module/lpm_levels/enable_low_power/l2 4
-    write /sys/module/msm_pm/modes/cpu0/power_collapse/suspend_enabled 1
-    write /sys/module/msm_pm/modes/cpu1/power_collapse/suspend_enabled 1
-    write /sys/module/msm_pm/modes/cpu2/power_collapse/suspend_enabled 1
-    write /sys/module/msm_pm/modes/cpu3/power_collapse/suspend_enabled 1
-    write /sys/module/msm_pm/modes/cpu0/power_collapse/idle_enabled 1
-    write /sys/module/msm_thermal/core_control/enabled 0
-    write /sys/devices/system/cpu/cpu1/online 1
-    write /sys/devices/system/cpu/cpu2/online 1
-    write /sys/devices/system/cpu/cpu3/online 1
-    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor "powersave"
-    write /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor "powersave"
-    write /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor "powersave"
-    write /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor "powersave"
-    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 300000
-    write /sys/devices/system/cpu/cpu1/cpufreq/scaling_min_freq 300000
-    write /sys/devices/system/cpu/cpu2/cpufreq/scaling_min_freq 300000
-    write /sys/devices/system/cpu/cpu3/cpufreq/scaling_min_freq 300000
-    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq 2265600
-    write /sys/devices/system/cpu/cpu1/cpufreq/scaling_max_freq 2265600
-    write /sys/devices/system/cpu/cpu2/cpufreq/scaling_max_freq 2265600
-    write /sys/devices/system/cpu/cpu3/cpufreq/scaling_max_freq 2265600
-    write /sys/module/msm_thermal/core_control/enabled 1
+    #low power governing
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor interactive
     write /sys/devices/system/cpu/cpu1/online 0
     write /sys/devices/system/cpu/cpu2/online 0
     write /sys/devices/system/cpu/cpu3/online 0
+    write /sys/module/lpm_levels/enable_low_power/l2 4
+    write /sys/module/msm_pm/modes/cpu0/power_collapse/suspend_enabled 1
+    write /sys/module/msm_pm/modes/cpu0/power_collapse/idle_enabled 1
+    write /sys/module/msm_pm/modes/cpu0/standalone_power_collapse/suspend_enabled 1
+    write /sys/module/msm_pm/modes/cpu0/standalone_power_collapse/idle_enabled 1
+    write /sys/module/msm_pm/modes/cpu0/retention/idle_enabled 1
 
-on early-init
-    setprop sys.perf.profile 2
-    write /sys/block/mmcblk0/bdi/read_ahead_kb 512
+on boot
+    # Shamu boots with performance governor.
+    # Switch one core to interactive to set permissions, for power hal and system server.
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor interactive
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/timer_rate
+    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/timer_rate
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/timer_slack
+    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/timer_slack
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/min_sample_time
+    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/min_sample_time
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq
+    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/target_loads
+    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/target_loads
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load
+    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/above_hispeed_delay
+    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/above_hispeed_delay
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/boost
+    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/boost
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/boostpulse
+    #chown system system /sys/devices/system/cpu/cpufreq/interactive/input_boost
+    #chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/input_boost
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/boostpulse_duration
+    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/boostpulse_duration
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/io_is_busy
+    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/io_is_busy
+    chown system system /sys/module/cpu_boost/parameters/boost_ms
+    chmod 0660 /sys/module/cpu_boost/parameters/boost_ms
+    chown system system /sys/module/cpu_boost/parameters/sync_threshold
+    chmod 0660 /sys/module/cpu_boost/parameters/sync_threshold
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/sampling_down_factor
+    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/sampling_down_factor
+    chown system system /sys/module/cpu_boost/parameters/input_boost_freq
+    chmod 0660 /sys/module/cpu_boost/parameters/input_boost_freq
+    chown system system /sys/module/cpu_boost/parameters/input_boost_ms
+    chmod 0660 /sys/module/cpu_boost/parameters/input_boost_ms
+    chown system system /dev/cpuctl/apps/cpu.notify_on_migrate
+    chmod 0660 /dev/cpuctl/apps/cpu.notify_on_migrate
 
-on property:init.svc.bootanim=running
-    setprop sys.perf.profile 2
-
-on property:service.bootanim.exit=1
-    # Enable Power modes
+on property:dev.bootcomplete=1
     write /sys/module/lpm_levels/enable_low_power/l2 4
     write /sys/module/msm_pm/modes/cpu0/power_collapse/suspend_enabled 1
     write /sys/module/msm_pm/modes/cpu1/power_collapse/suspend_enabled 1
@@ -57,27 +73,9 @@ on property:service.bootanim.exit=1
     write /sys/module/msm_pm/modes/cpu1/retention/idle_enabled 1
     write /sys/module/msm_pm/modes/cpu2/retention/idle_enabled 1
     write /sys/module/msm_pm/modes/cpu3/retention/idle_enabled 1
-
-    write /sys/kernel/msm_limiter/suspend_min_freq_0 300000
-    write /sys/kernel/msm_limiter/suspend_min_freq_1 300000
-    write /sys/kernel/msm_limiter/suspend_min_freq_2 300000
-    write /sys/kernel/msm_limiter/suspend_min_freq_3 300000
-    write /sys/kernel/msm_limiter/resume_max_freq_0 2649600
-    write /sys/kernel/msm_limiter/resume_max_freq_1 2649600
-    write /sys/kernel/msm_limiter/resume_max_freq_2 2649600
-    write /sys/kernel/msm_limiter/resume_max_freq_3 2649600
-
-    chown root system /sys/devices/system/cpu/cpu1/online
-    chown root system /sys/devices/system/cpu/cpu2/online
-    chown root system /sys/devices/system/cpu/cpu3/online
-    chmod 664 /sys/devices/system/cpu/cpu1/online
-    chmod 664 /sys/devices/system/cpu/cpu2/online
-    chmod 664 /sys/devices/system/cpu/cpu3/online
-
-on property:init.svc.bootanim=stopped
     write /sys/module/msm_thermal/core_control/enabled 0
 
-    write /sys/kernel/msm_limiter/scaling_governor_0 interactive
+    # cpufreq settings
     write /sys/devices/system/cpu/cpufreq/interactive/above_hispeed_delay "20000 1400000:40000 1700000:20000"
     write /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load 90
     write /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq 1190400
@@ -88,39 +86,16 @@ on property:init.svc.bootanim=stopped
     write /sys/devices/system/cpu/cpufreq/interactive/max_freq_hysteresis 100000
     write /sys/devices/system/cpu/cpufreq/interactive/timer_slack 30000
 
-    write /sys/block/mmcblk0/queue/scheduler cfq
-    write /dev/cpuctl/apps/cpu.notify_on_migrate 1
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor impulse
+    write /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor impulse
+    write /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor impulse
+    write /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor impulse
 
-    setprop sys.perf.profile 1
-
-# CM Performance Profiles
-
-# Powersave
-on property:sys.perf.profile=0
-    write /sys/class/devfreq/qcom,cpubw.36/governor "powersave"
-    write /sys/kernel/msm_limiter/scaling_governor_0 conservative
-    write /sys/kernel/msm_limiter/scaling_governor_1 conservative
-    write /sys/kernel/msm_limiter/scaling_governor_2 conservative
-    write /sys/kernel/msm_limiter/scaling_governor_3 conservative
-
-    write /sys/module/cpu_boost/parameters/boost_ms 0
-    write /sys/module/cpu_boost/parameters/sync_threshold 0
-    write /sys/module/cpu_boost/parameters/input_boost_freq 1190400
-    write /sys/module/cpu_boost/parameters/input_boost_ms 40
-    write /sys/module/cpu_boost/parameters/load_based_syncs 0
-    write /sys/class/kgsl/kgsl-3d0/devfreq/governor "msm-adreno-tz"
-
-# Balanced
-on property:sys.perf.profile=1
-    write /sys/class/devfreq/qcom,cpubw.36/governor "cpubw_hwmon"
-    write /sys/kernel/msm_limiter/scaling_governor_0 impulse
-    write /sys/kernel/msm_limiter/scaling_governor_1 impulse
-    write /sys/kernel/msm_limiter/scaling_governor_2 impulse
-    write /sys/kernel/msm_limiter/scaling_governor_3 impulse
     write /sys/devices/system/cpu/cpufreq/impulse/above_hispeed_delay "20000 1400000:40000 1700000:20000"
     write /sys/devices/system/cpu/cpufreq/impulse/go_hispeed_load 95
     write /sys/devices/system/cpu/cpufreq/impulse/hispeed_freq 1190400
     write /sys/devices/system/cpu/cpufreq/impulse/io_is_busy 1
+    write /sys/devices/system/cpu/cpufreq/impulse/powersave_bias 1
     write /sys/devices/system/cpu/cpufreq/impulse/target_loads "85 1500000:90 1800000:70"
     write /sys/devices/system/cpu/cpufreq/impulse/min_sample_time 40000
     write /sys/devices/system/cpu/cpufreq/impulse/timer_rate 30000
@@ -131,20 +106,9 @@ on property:sys.perf.profile=1
     write /sys/module/cpu_boost/parameters/sync_threshold 1728000
     write /sys/module/cpu_boost/parameters/input_boost_freq 1497600
     write /sys/module/cpu_boost/parameters/input_boost_ms 500
-    write /sys/module/cpu_boost/parameters/load_based_syncs 1
-    write /sys/class/kgsl/kgsl-3d0/devfreq/governor "msm-adreno-tz"
 
-# High performance
-on property:sys.perf.profile=2
-    write /sys/class/devfreq/qcom,cpubw.36/governor "performance"
-    write /sys/kernel/msm_limiter/scaling_governor_0 performance
-    write /sys/kernel/msm_limiter/scaling_governor_1 performance
-    write /sys/kernel/msm_limiter/scaling_governor_2 performance
-    write /sys/kernel/msm_limiter/scaling_governor_3 performance
+    write /sys/block/mmcblk0/queue/scheduler cfq
+    write /dev/cpuctl/apps/cpu.notify_on_migrate 1
 
-    write /sys/module/cpu_boost/parameters/boost_ms 20
-    write /sys/module/cpu_boost/parameters/sync_threshold 1728000
-    write /sys/module/cpu_boost/parameters/input_boost_freq 1497600
-    write /sys/module/cpu_boost/parameters/input_boost_ms 500
-    write /sys/module/cpu_boost/parameters/load_based_syncs 1
-    write /sys/class/kgsl/kgsl-3d0/devfreq/governor "performance"
+    # Hail Hydra!!
+    exec /sbin/post-init.sh
