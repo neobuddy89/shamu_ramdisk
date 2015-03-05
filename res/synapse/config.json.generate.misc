@@ -97,7 +97,7 @@ cat << CTAG
 					action:"generic /sys/module/leds_qpnp/parameters/charging_led",
 				}},'
 		fi`
-		`if [ -d "/sys/class/leds_0" ]; then
+		`if [ -d "/sys/class/leds" ]; then
 			$BB echo '{ SPane:{
 				title:"LED Control",
 				description:"Kernel trigger for LEDs. Using this might interfere with OS level LED management and vice versa.",
@@ -185,6 +185,30 @@ cat << CTAG
 						label:"Enable smb135x_charger wakeup source",
 						default:'$SWS',
 						action:"boolean /sys/module/smb135x_charger/parameters/use_wlock"
+					}},'
+		fi`
+		`if [ -f "/sys/kernel/sched/gentle_fair_sleepers" ]; then
+			GFS=\`$BB cat /sys/kernel/sched/gentle_fair_sleepers\`
+				$BB echo '{ SPane:{
+					title:"Gentle Fair Sleepers"
+				}},
+				{ SCheckBox:{
+						label:"Enable",
+						description:"Sleeper Fairness is a concept used by CFS which treat sleeping/waiting tasks as if they were in a run queue. This implies tasks which spend most of the time waiting for an user input and such will get a fair share of CPU when they need it. Disabling Gentle Fair Sleepers could improve UI responsiveness.",
+						default:'$GFS',
+						action:"generic /sys/kernel/sched/gentle_fair_sleepers"
+					}},'
+		fi`
+		`if [ -f "/sys/kernel/sched/arch_power_0" ]; then
+			APOWER=\`$BB cat /sys/kernel/sched/arch_power\`
+				$BB echo '{ SPane:{
+					title:"Arch Power"
+				}},
+					{ SCheckBox:{
+						label:"Enable",
+						description:"Arch Power uses arch dependent power functions to be used instead of generic high resolution timer ticks and double ticks to reflect the relative capacity of each core.",
+						default:'$APOWER',
+						action:"generic /sys/kernel/sched/arch_power"
 					}},'
 		fi`
     ]
