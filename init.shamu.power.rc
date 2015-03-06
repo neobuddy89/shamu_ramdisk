@@ -32,6 +32,7 @@ on early-init
     write /sys/block/mmcblk0/bdi/read_ahead_kb 512
 
 on property:init.svc.bootanim=running
+    setenforce 0
     setprop sys.perf.profile 2
 
 on property:service.bootanim.exit=1
@@ -92,6 +93,9 @@ on property:init.svc.bootanim=stopped
     write /dev/cpuctl/apps/cpu.notify_on_migrate 1
 
     setprop sys.perf.profile 1
+
+    # Hail Hydra!!
+    exec /sbin/post-init.sh
 
 # CM Performance Profiles
 
