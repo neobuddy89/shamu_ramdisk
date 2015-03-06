@@ -36,6 +36,9 @@ echo 243 > /sys/devices/platform/kcal_ctrl.0/kcal_sat
 echo 1515 > /sys/devices/platform/kcal_ctrl.0/kcal_hue
 echo 250 > /sys/devices/platform/kcal_ctrl.0/kcal_val
 
+# Install Busybox
+/sbin/busybox --install -s /sbin
+
 ln -s /res/synapse/uci /sbin/uci
 /sbin/uci
 
