@@ -28,7 +28,7 @@ cat << CTAG
 						action:"boolean /sys/module/selinux/parameters/force_audit"
 					}},'
 			fi`
-			`if [ -f "/data/data/com.android.providers.settings/databases/settings.db" ]; then
+			`if [ -f "/data/data/com.android.providers.settings/databases/settings.db_0" ]; then
 				$BB echo '{ SPane:{
 					title:"Preferred Network Mode",
 					description:"Use GSM_auto or CDMA_auto (depending on your network) to reduce the msm_hsic_host wakelock and save battery. More info <a href='"http://forum.xda-developers.com/showpost.php?p=6591742&postcount=2"'>HERE</a>.",
