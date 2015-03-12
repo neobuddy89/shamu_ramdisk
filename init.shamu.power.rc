@@ -30,10 +30,12 @@ on charger
 on early-init
     setprop sys.perf.profile 2
     write /sys/block/mmcblk0/bdi/read_ahead_kb 512
+    write /sys/module/msm_hotplug/min_cpus_online 4
 
 on property:init.svc.bootanim=running
     setenforce 0
     setprop sys.perf.profile 2
+    write /sys/module/msm_hotplug/min_cpus_online 4
 
 on property:service.bootanim.exit=1
     # Enable Power modes
@@ -92,6 +94,12 @@ on property:init.svc.bootanim=stopped
     write /sys/block/mmcblk0/queue/scheduler cfq
     write /dev/cpuctl/apps/cpu.notify_on_migrate 1
 
+    write /sys/module/msm_hotplug/min_cpus_online 1
+    write /sys/module/msm_hotplug/down_lock_duration 500
+    write /sys/module/msm_hotplug/boost_lock_duration 2500
+    write /sys/module/msm_hotplug/update_rates "200 5:100 50:50 350:200"
+    write /sys/module/msm_hotplug/fast_lane_load 100
+
     setprop sys.perf.profile 1
 
     # Hail Hydra!!
@@ -124,6 +132,7 @@ on property:sys.perf.profile=1
     write /sys/devices/system/cpu/cpufreq/impulse/above_hispeed_delay "20000 1400000:40000 1700000:20000"
     write /sys/devices/system/cpu/cpufreq/impulse/go_hispeed_load 95
     write /sys/devices/system/cpu/cpufreq/impulse/hispeed_freq 1190400
+    write /sys/devices/system/cpu/cpufreq/impulse/powersave_bias 1
     write /sys/devices/system/cpu/cpufreq/impulse/io_is_busy 1
     write /sys/devices/system/cpu/cpufreq/impulse/target_loads "85 1500000:90 1800000:70"
     write /sys/devices/system/cpu/cpufreq/impulse/min_sample_time 40000
