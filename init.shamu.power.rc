@@ -166,4 +166,5 @@ service postinit /sbin/post-init.sh
     class main
     user root
     disabled
-    seclabel u:r:shell:s0
+    oneshot
+

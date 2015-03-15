@@ -45,3 +45,5 @@ ln -s /res/synapse/uci /sbin/uci
 if [ ! -e /data/.selinux_disabled ]; then
 	setenforce 1
 fi;
+
+exit;
