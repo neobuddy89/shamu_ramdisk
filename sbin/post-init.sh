@@ -13,6 +13,7 @@ rm -f /system/etc/init.d/UKM;
 rm -f /system/etc/init.d/UKM_WAKE;
 rm -f /system/xbin/uci;
 rm -rf /data/UKM;
+rm -rf /data/data/leankernel;
 
 # Make tmp folder
 mkdir /tmp;
@@ -41,6 +42,9 @@ echo 250 > /sys/devices/platform/kcal_ctrl.0/kcal_val
 
 ln -s /res/synapse/uci /sbin/uci
 /sbin/uci
+
+# Init.d Support
+/sbin/busybox run-parts /system/etc/init.d
 
 if [ ! -e /data/.selinux_disabled ]; then
 	setenforce 1

@@ -405,15 +405,62 @@
 /sys/devices/system/cpu/cpu0/rq-stats(/.*)?                     u:object_r:sysfs_rqstats:s0
 /sys/module/cpu_boost/parameters(/.*)?                          u:object_r:sysfs_cpuboost:s0
 
-# for Settings' access to DisplayColorCalibration
-/sys/devices/platform/kcal_ctrl\.0/kcal                   u:object_r:rootfs:s0
-/sys/devices/platform/kcal_ctrl\.0/kcal_ctrl              u:object_r:rootfs:s0
-
 /sys/bus/platform/drivers/xhci_msm_hsic(/.*)?            u:object_r:sysfs_xhci_msm_hsic:s0
 /sys/devices/msm_hsic_host/host_ready                    u:object_r:sysfs_msm_hsic_host:s0
 
 /sys/devices/cycapsense_prog.1/cycapsense_fw             u:object_r:sysfs_capsense_update:s0
 /sys/devices/mmi_sar_ctrl.[0-9]*/sar_wifi                u:object_r:sysfs_sar_wifi:s0
 
-/system/bin/imsdatadaemon                       u:object_r:ims_exec:s0
-/system/bin/imsqmidaemon                        u:object_r:ims_exec:s0
+/system/bin/imsdatadaemon                                u:object_r:ims_exec:s0
+/system/bin/imsqmidaemon                                 u:object_r:ims_exec:s0
+
+# TapToWake
+/sys/devices/f9966000.i2c/i2c-1/1-004a/tsp               u:object_r:tap2wake_dev:s0
+
+# for Settings' access to VibratorHW
+/sys/vibrator/pwmvalue                                   u:object_r:sysfs_vibrator:s0
+
+# for Settings' access to DisplayColorCalibration
+/sys/devices/platform/kcal_ctrl\.0/kcal                  u:object_r:rootfs:s0
+/sys/devices/platform/kcal_ctrl\.0/kcal_enable           u:object_r:rootfs:s0
+/sys/devices/platform/kcal_ctrl\.0/kcal_cont             u:object_r:rootfs:s0
+/sys/devices/platform/kcal_ctrl\.0/kcal_hue              u:object_r:rootfs:s0
+/sys/devices/platform/kcal_ctrl\.0/kcal_invert           u:object_r:rootfs:s0
+/sys/devices/platform/kcal_ctrl\.0/kcal_min              u:object_r:rootfs:s0
+/sys/devices/platform/kcal_ctrl\.0/kcal_sat              u:object_r:rootfs:s0
+/sys/devices/platform/kcal_ctrl\.0/kcal_val              u:object_r:rootfs:s0
+
+# Sunlight Mode
+/sys/devices/virtual/graphics/fb0/hbm                    u:object_r:sysfs_display:s0
+#line 1 "vendor/eos/sepolicy/file_contexts"
+/cache/dalvik-cache(/.*)? u:object_r:dalvikcache_data_file:s0
+
+/cache/recovery(/.*)?     u:object_r:recovery_cache_file:s0
+
+# Auditd is a logging daemon. Put it into logd's context
+/system/bin/auditd        u:object_r:logd_exec:s0
+/data/misc/audit(/.*)?    u:object_r:auditd_log:s0
+
+# Themes
+/data/system/theme(/.*)?  u:object_r:theme_data_file:s0
+
+/system/bin/sysinit       u:object_r:sysinit_exec:s0
+
+/system/etc/init.d/90userinit           u:object_r:userinit_exec:s0
+
+# For minivold in recovery
+/sbin/minivold            u:object_r:vold_exec:s0
+
+#############################
+# performance-related sysfs files
+/sys/devices/system/cpu.*/cpufreq(/.*)? --  u:object_r:sysfs_devices_system_cpu:s0
+/sys/block/mmcblk.*/queue/scheduler  --    u:object_r:sysfs_devices_system_iosched:s0
+
+/data/hostapd(/.*)?         u:object_r:wifi_data_file:s0
+
+#############
+# Superuser's control sockets
+/dev/socket/su-daemon(/.*)?   u:object_r:superuser_device:s0
+
+# Lockscreen wallpaper
+/data/system/users/[0-9]+/keyguard_wallpaper   u:object_r:wallpaper_file:s0
