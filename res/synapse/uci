@@ -17,7 +17,7 @@ if [ ! -f $UCI_CONFIG ]; then
 	# Use this trigger to reset Synapse settings on boot.
 	# Just increment it for cases like default parameters are changed
 	# for some drivers and you wish user to use these parameters on boot.
-	KERNEL_CURR=20150412-lollipop;
+	KERNEL_CURR=20150416-lollipop;
 	
 	if [ ! -f "$SYNAPSE_SD_DIR/last_kernel" ]; then
 		$BB rm -R /data/data/com.af.synapse/databases;

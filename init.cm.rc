@@ -31,5 +31,5 @@ on property:service.adb.tcp.port=-1
     stop adbd
     start adbd
 
-on property:ro.cm.version=*
+on property:ro.modversion=*
     export SYSTEMSERVERCLASSPATH /system/framework/org.cyanogenmod.hardware.jar:/system/framework/services.jar:/system/framework/ethernet-service.jar:/system/framework/wifi-service.jar
