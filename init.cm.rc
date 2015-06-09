@@ -10,6 +10,7 @@ on post-fs-data
     chown system system /cache/dalvik-cache
     chmod 0771 /cache/dalvik-cache
     mkdir /data/.ssh 0750 root shell
+    mkdir /cache/recovery 0770 system cache
 
 on boot
     # Assume SMP uses shared cpufreq policy for all CPUs
@@ -45,13 +46,16 @@ on property:service.adb.tcp.port=-1
     stop adbd
     start adbd
 
+# Disable ril services if noril prop is set
+on property:ro.radio.noril=1
+    stop ril-daemon
+    stop qmuxd
+    stop netmgrd
+
 on property:persist.radio.noril=1
     setprop ro.radio.noril 1
 
 # custom rom path
-on fs
-    export SYSTEMSERVERCLASSPATH /system/framework/services.jar:/system/framework/ethernet-service.jar:/system/framework/wifi-service.jar
-
-on property:ro.cm.device=*
+on property:ro.modversion=*
     export SYSTEMSERVERCLASSPATH /system/framework/org.cyanogenmod.platform.jar:/system/framework/org.cyanogenmod.hardware.jar:/system/framework/services.jar:/system/framework/ethernet-service.jar:/system/framework/wifi-service.jar
     export LD_PRELOAD libsigchain.so
