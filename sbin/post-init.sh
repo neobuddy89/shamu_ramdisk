@@ -59,7 +59,12 @@ if [ -e /system/lib/libsupol.so ]; then
 	"allow drmserver theme_data_file file r_file_perms" \
 	"allow zygote system_file file write" \
 	"allow atfwd property_socket sock_file write" \
-	"allow debuggerd app_data_file dir search"
+	"allow debuggerd app_data_file dir search" \
+	"allow sensors diag_device chr_file { read write open ioctl }" \
+	"allow sensors sensors capability net_raw" \
+	"allow init kernel security setenforce" \
+	"allow netmgrd netmgrd netlink_xfrm_socket nlmsg_write" \
+	"allow netmgrd netmgrd socket { read write open ioctl }"
 fi;
 
 ln -s /res/synapse/uci /sbin/uci
