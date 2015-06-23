@@ -25,9 +25,10 @@ on early-init
     chown system system /sys/kernel/debug/kgsl/proc
 
 on init
-    chmod 0701 /mnt/media_rw
-    mkdir /mnt/media_rw/usbdisk 0775 system system
     # See storage config details at http://source.android.com/tech/storage/
+    mkdir /mnt/media_rw/usbdisk 0700 media_rw media_rw
+    mkdir /storage/usbdisk 0700 root root
+
     mkdir /mnt/shell/emulated 0700 shell shell
     mkdir /storage/emulated 0555 root root
 
@@ -35,7 +36,6 @@ on init
 
     # Set permissions for persist partition
     mkdir /persist 0771 system system
-    mkdir /storage/usbdisk 0000 system system
 
     export EXTERNAL_STORAGE /storage/emulated/legacy
     export EMULATED_STORAGE_SOURCE /mnt/shell/emulated
@@ -137,8 +137,6 @@ on boot
     chown bluetooth net_bt_stack /proc/bluetooth/sleep/btwrite
     chown bluetooth net_bt_stack /sys/module/hci_uart/parameters/ath_lpm
     chown bluetooth net_bt_stack /sys/module/hci_uart/parameters/ath_btwrite
-    chown system system /sys/class/leds/charging/brightness
-    chown system system /sys/class/leds/charging/max_brightness
     chown system system /sys/module/sco/parameters/disable_esco
     chown bluetooth net_bt_stack /sys/module/hci_smd/parameters/hcismd_set
     chmod 0660 /sys/module/bluetooth_power/parameters/power
@@ -248,8 +246,6 @@ on boot
     chown media media /sys/devices/c55_ctrl/gpio_c55_int/value
     chown media media /sys/devices/c55_ctrl/gpio_core/value
     chown media media /sys/devices/c55_ctrl/gpio_reset/value
-
-    chmod 0644 /proc/cmdline
 
     # LED permissions
     chmod 664 /sys/class/leds/red/brightness
@@ -535,6 +531,11 @@ service adspd /system/bin/adspd /dev/ttyHS3
    user media
    group media input
 
+#external storage
+service fuse_usbdisk /system/bin/sdcard -u 1023 -g 1023  /mnt/media_rw/usbdisk /storage/usbdisk
+    class late_start
+    disabled
+
 on property:sys.boot_completed=1
     start qcom-post-boot
 
@@ -563,18 +564,14 @@ on property:persist.usb.chgdisabled=1
 on property:persist.usb.chgdisabled=0
     write /sys/class/power_supply/battery/charging_enabled 1
 
-service fuse_usbdisk /system/bin/sdcard -u 1023 -g 1023 /mnt/media_rw/usbdisk /storage/usbdisk
-    class late_start
-    disabled
-
 service qseecomd /system/bin/qseecomd
-    class core
-    user root
-    group root
+   class core
+   user root
+   group root
 
 service mpdecision /system/bin/mpdecision --avg_comp
-    class main
-    user root
+   class main
+   user root
 
 service ss_ramdump /system/bin/subsystem_ramdump
     class main

@@ -54,8 +54,3 @@ on property:ro.radio.noril=1
 
 on property:persist.radio.noril=1
     setprop ro.radio.noril 1
-
-# custom rom path
-on property:ro.modversion=*
-    export SYSTEMSERVERCLASSPATH /system/framework/org.cyanogenmod.platform.jar:/system/framework/org.cyanogenmod.hardware.jar:/system/framework/services.jar:/system/framework/ethernet-service.jar:/system/framework/wifi-service.jar
-    export LD_PRELOAD libsigchain.so
