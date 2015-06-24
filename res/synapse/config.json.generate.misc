@@ -60,6 +60,18 @@ cat << CTAG
 					action:"boolean /sys/module/state_notifier/parameters/use_fb_notifier"
 				}},'
 		fi`
+		`if [ -f "/sys/module/adreno_idler/parameters/adreno_idler_active" ]; then
+			AD=\`bool /sys/module/adreno_idler/parameters/adreno_idler_active\`
+			$BB echo '{ SPane:{
+			title:"Adreno Idler"
+			}},
+				{ SCheckBox:{
+					label:"Enable Adreno Idler (Experimental)",
+					description:"Adreno idler replaces GPU algorithm for calculating idle frequency. It bumps GPU to idle frequency when GPU is not under high load and reduces power consumption.",
+					default:'$AD',
+					action:"boolean /sys/module/adreno_idler/parameters/adreno_idler_active"
+				}},'
+		fi`
 		`if [ -f "/sys/kernel/fast_charge/force_fast_charge" ] && [ ! -f "/sys/kernel/fast_charge/fast_charge_level" ]; then
 			FC=\`$BB cat /sys/kernel/fast_charge/force_fast_charge\`
 			$BB echo '{ SPane:{
