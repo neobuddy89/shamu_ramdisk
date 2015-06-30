@@ -140,6 +140,18 @@ cat << CTAG
 							fi;
 					done < /sys/devices/system/cpu/cpu0/cpufreq/gpu_mv_table
 			fi`
+			`if [ -f "/sys/module/adreno_idler/parameters/adreno_idler_active" ]; then
+				AD=\`bool /sys/module/adreno_idler/parameters/adreno_idler_active\`
+				$BB echo '{ SPane:{
+				title:"Adreno Idler"
+				}},
+					{ SCheckBox:{
+						label:"Enable Adreno Idler (Experimental)",
+						description:"Adreno idler replaces GPU algorithm for calculating idle frequency. It bumps GPU to idle frequency when GPU is not under high load and reduces power consumption.",
+						default:'$AD',
+						action:"boolean /sys/module/adreno_idler/parameters/adreno_idler_active"
+					}},'
+			fi`
 		]
 }
 CTAG
