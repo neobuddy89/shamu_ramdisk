@@ -73,6 +73,18 @@ ln -s /res/synapse/uci /sbin/uci
 # Init.d Support
 /sbin/busybox run-parts /system/etc/init.d
 
+# Google Services battery drain fixer by Alcolawl@xda
+pm enable com.google.android.gms/.update.SystemUpdateActivity
+pm enable com.google.android.gms/.update.SystemUpdateService
+pm enable com.google.android.gms/.update.SystemUpdateService$ActiveReceiver
+pm enable com.google.android.gms/.update.SystemUpdateService$Receiver
+pm enable com.google.android.gms/.update.SystemUpdateService$SecretCodeReceiver
+pm enable com.google.android.gsf/.update.SystemUpdateActivity
+pm enable com.google.android.gsf/.update.SystemUpdatePanoActivity
+pm enable com.google.android.gsf/.update.SystemUpdateService
+pm enable com.google.android.gsf/.update.SystemUpdateService$Receiver
+pm enable com.google.android.gsf/.update.SystemUpdateService$SecretCodeReceiver
+
 if [ ! -e /data/.selinux_disabled ]; then
 	setenforce 1
 fi;
