@@ -81,19 +81,11 @@ cat << CTAG
 					}},'
 				fi`
 			{ SDescription:{
-				description:"Save the logcat (App/system debug), dmesg (active kernel output) or last_kmsg (same as dmesg but from the last shutdown). Submit last_kmsg whenever you face issue (random reboot, freeze) and rebooting kernel resolved that issue."
+				description:"To report any issue with the kernel, you should share the zip file of logs created by using below button. This will put logcat, dmesg and ramoops (last_kmsg) into one zip file which will be used only for debug purposes."
 			}},
 				{ SButton:{
-					label:"Save logcat",
-					action:"devtools logcat"
-				}},
-				{ SButton:{
-					label:"Save dmesg",
-					action:"devtools dmesg"
-				}},
-				{ SButton:{
-					label:"Save last_kmsg",
-					action:"devtools kmsg"
+					label:"Save Logs",
+					action:"devtools alllogs"
 				}},
 			{ SPane:{
 				title:"Kernel"

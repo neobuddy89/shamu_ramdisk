@@ -63,6 +63,20 @@ case $1 in
 			$BB echo "$kmsg not found.";
 		fi;
 	;;
+	alllogs)
+		[ ! -d "$LOGS/$TIMESTAMP" ] && $BB mkdir -p "$LOGS/$TIMESTAMP";
+		$BB chmod 755 $LOGS/$TIMESTAMP;
+		logmsg="$LOGS/$TIMESTAMP/logcat.txt";
+		dmsg="$LOGS/$TIMESTAMP/dmesg.txt";
+		logcat -d > $logmsg;
+		$BB dmesg > $dmsg;
+		$BB cp /sys/fs/pstore/* $LOGS/$TIMESTAMP/
+		cd $LOGS/$TIMESTAMP/
+		zip -r logs.zip .
+		$BB mv $LOGS/$TIMESTAMP/logs.zip $LOGS/logs-$TIMESTAMP.zip
+		$BB rm -rf $LOGS/$TIMESTAMP
+		$BB echo "Logs saved to $LOGS/logs-$TIMESTAMP.zip";
+	;;
 	reboot)
 		$BB sleep 1;
 		reboot $2;
