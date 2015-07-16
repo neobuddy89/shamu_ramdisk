@@ -14,6 +14,9 @@ rm -f /system/etc/init.d/UKM_WAKE;
 rm -f /system/xbin/uci;
 rm -rf /data/UKM;
 rm -rf /data/data/leankernel;
+if [ -e /system/xbin/zip ]; then
+	rm -f /sbin/zip;
+fi;
 
 # Make tmp folder
 mkdir /tmp;
