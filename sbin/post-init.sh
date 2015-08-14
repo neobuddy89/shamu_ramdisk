@@ -31,8 +31,12 @@ chmod 6755 /system/xbin/*;
 echo "Boot initiated on $(date)" > /tmp/bootcheck;
 
 # Tune LMK with values we love
-echo "1536,2048,4096,16384,28672,32768" > /sys/module/lowmemorykiller/parameters/minfree
-echo 32 > /sys/module/lowmemorykiller/parameters/cost
+#echo "1536,2048,4096,16384,28672,32768" > /sys/module/lowmemorykiller/parameters/minfree
+#echo 32 > /sys/module/lowmemorykiller/parameters/cost
+
+# Adaptive LMK
+echo 1 > /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk
+echo 53059 > /sys/module/lowmemorykiller/parameters/vmpressure_file_min
 
 # Calibrate display
 echo "250 250 255" > /sys/devices/platform/kcal_ctrl.0/kcal
