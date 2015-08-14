@@ -48,7 +48,7 @@ cat << CTAG
 				}},'
 			fi
 		fi`
-		`if [ -f "/sys/module/state_notifier/parameters/use_fb_notifier" ]; then
+		`if [ -f "/sys/module/state_notifier/parameters/use_fb_notifier_0" ]; then
 			SN=\`bool /sys/module/state_notifier/parameters/use_fb_notifier\`
 			$BB echo '{ SPane:{
 			title:"Framebuffer Notifiers"
