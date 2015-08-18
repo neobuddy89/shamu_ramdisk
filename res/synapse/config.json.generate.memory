@@ -179,6 +179,12 @@ cat << CTAG
 				$BB echo '{ SPane:{
 					title:"Low Memory Killer",
 					description:"LMK Minfree controls how much memory each app type can hold, and is responsible for memory management for multitasking."
+				}},
+				{ SCheckBox:{
+					label:"Adaptive LMK",
+					description:"Adaptive LMK prevents sluggishness and provides very low app launch latency by improving LMK routines.",
+					default:1,
+					action:"generic /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk"
 				}},'
 					for LMK in 1 2 3 4 5 6; do
 						$BB echo '{ SSeekBar:{ '
