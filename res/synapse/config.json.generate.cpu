@@ -240,6 +240,12 @@ cat << CTAG
 		}
 	}},
 	{ SCheckBox:{
+		label:"Scheduler Boost",
+		description:"Scheduler Boost move most/all tasks to the big cluster for short duration on an input event to improve performance.",
+		default:1,
+		action:"boolean /sys/module/cpu_boost/parameters/sched_boost_on_input",
+	}},
+	{ SCheckBox:{
 		label:"Hotplug Boost",
 		description:"Hotplug Boost is similar to input boost but it occurs when CPUs go online.",
 		default:1,
