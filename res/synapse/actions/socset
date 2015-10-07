@@ -1,0 +1,34 @@
+BB=/sbin/busybox;
+
+[ -d "/sys/module/lpm_levels/system" ] && PM=/sys/module/lpm_levels/system;
+			
+if [ -f $1 ]; then
+	if [[ ! -z $3 ]]; then
+		if [ "$3" -eq 1 ]; then
+			VALUE="Y";
+		elif [ "$3" -eq 0 ]; then
+			VALUE="N";
+		fi;
+		for CSTATE in $PM/cpu[0-3]/$2; do
+			if [ -f "$CSTATE/idle_enabled" ]; then
+				$BB echo $VALUE > $CSTATE/idle_enabled;
+			fi;
+			
+			if [ -f "$CSTATE/suspend_enabled" ]; then
+				$BB echo $VALUE > $CSTATE/suspend_enabled;
+			fi;
+		done;
+	fi;
+
+	VALUE=`$BB cat $1`;
+
+	if [ $VALUE = "Y" ]; then
+		$BB echo "1";
+	else
+		$BB echo "0";
+	fi;
+	
+else
+	$BB echo "0";
+fi;
+

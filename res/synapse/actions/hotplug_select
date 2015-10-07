@@ -1,0 +1,77 @@
+BB=/sbin/busybox;
+
+if [[ ! -z $2 ]]; then
+	$BB echo $2 > $1;
+	if [  $2 == "MSM_Hotplug" ]; then
+			echo "0" > /sys/devices/system/cpu/cpu0/rq-stats/hotplug_enable;
+			if [ -e /sys/kernel/intelli_plug/intelli_plug_active ]; then
+				echo "0" > /sys/kernel/intelli_plug/intelli_plug_active;
+			fi
+			if [ -e /sys/kernel/msm_mpdecision/conf/enabled ]; then
+				echo "0" > /sys/kernel/msm_mpdecision/conf/enabled;
+			fi
+			$BB sleep 1;
+			echo "1" > /sys/module/msm_hotplug/msm_enabled;
+	elif [  $2 == "Intelli_Hotplug" ]; then
+			echo "0" > /sys/devices/system/cpu/cpu0/rq-stats/hotplug_enable;
+			echo "0" > /sys/module/msm_hotplug/msm_enabled;
+			if [ -e /sys/kernel/msm_mpdecision/conf/enabled ]; then
+				echo "0" > /sys/kernel/msm_mpdecision/conf/enabled;
+			fi
+			$BB sleep 1;
+			echo "1" > /sys/kernel/intelli_plug/intelli_plug_active;
+	elif [  $2 == "Bricked_Hotplug" ] && [ -e /sys/kernel/msm_mpdecision/conf/enabled ]; then
+			echo "0" > /sys/devices/system/cpu/cpu0/rq-stats/hotplug_enable;
+			echo "0" > /sys/module/msm_hotplug/msm_enabled;
+			if [ -e /sys/kernel/intelli_plug/intelli_plug_active ]; then
+				echo "0" > /sys/kernel/intelli_plug/intelli_plug_active;
+			fi
+			$BB sleep 1;
+			echo "1" > /sys/kernel/msm_mpdecision/conf/enabled;
+	elif [  $2 == "Stock" ] &&
+		[ -e /system/bin/mpdecision ]; then
+			echo "0" > /sys/module/msm_hotplug/msm_enabled;
+			if [ -e /sys/kernel/intelli_plug/intelli_plug_active ]; then
+				echo "0" > /sys/kernel/intelli_plug/intelli_plug_active;
+			fi
+			if [ -e /sys/kernel/msm_mpdecision/conf/enabled ]; then
+				echo "0" > /sys/kernel/msm_mpdecision/conf/enabled;
+			fi
+
+			$BB sleep 1;
+			echo "1" > /sys/devices/system/cpu/cpu1/online
+			echo "1" > /sys/devices/system/cpu/cpu2/online
+			echo "1" > /sys/devices/system/cpu/cpu3/online
+			echo "1" > /sys/devices/system/cpu/cpu0/rq-stats/hotplug_enable;
+	else
+			echo "0" > /sys/devices/system/cpu/cpu0/rq-stats/hotplug_enable;
+			if [ -e /sys/kernel/intelli_plug/intelli_plug_active ]; then
+				echo "0" > /sys/kernel/intelli_plug/intelli_plug_active;
+			fi
+			if [ -e /sys/kernel/msm_mpdecision/conf/enabled ]; then
+				echo "0" > /sys/kernel/msm_mpdecision/conf/enabled;
+			fi
+			$BB sleep 1;
+			echo "1" > /sys/module/msm_hotplug/msm_enabled;
+	fi
+fi
+
+if [ $(expr `cat /sys/module/msm_hotplug/msm_enabled`) -eq "1" ]; then
+	echo "MSM_Hotplug"
+elif [ -e /sys/kernel/intelli_plug/intelli_plug_active ] && [ $(expr `cat /sys/kernel/intelli_plug/intelli_plug_active`) -eq "1" ]; then
+	echo "Intelli_Hotplug"
+elif [ -e /sys/kernel/msm_mpdecision/conf/enabled ] && [ $(expr `cat /sys/kernel/msm_mpdecision/conf/enabled`) -eq "1" ]; then
+	echo "Bricked_Hotplug"
+elif [ "`ps | $BB grep mpdecision`" ] && [ $(expr `cat /sys/devices/system/cpu/cpu0/rq-stats/hotplug_enable`) -eq "1" ]; then
+	echo "Stock"
+else
+	echo "0" > /sys/devices/system/cpu/cpu0/rq-stats/hotplug_enable;
+	if [ -e /sys/kernel/intelli_plug/intelli_plug_active ]; then
+		echo "0" > /sys/kernel/intelli_plug/intelli_plug_active;
+	fi
+	if [ -e /sys/kernel/msm_mpdecision/conf/enabled ]; then
+		echo "0" > /sys/kernel/msm_mpdecision/conf/enabled;
+	fi
+	echo "1" > /sys/module/msm_hotplug/msm_enabled;
+	echo "MSM_Hotplug"
+fi

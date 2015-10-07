@@ -1,0 +1,52 @@
+BB=/sbin/busybox;
+DEVICE=/res/synapse/files/shamu.sh;
+
+bool() {
+  [ `$BB cat $1` == "Y" ] && $BB echo "1";
+  [ `$BB cat $1` == "N" ] && $BB echo "0";
+}
+
+# Mount root as RW to apply tweaks and settings
+$BB mount -t rootfs -o remount,rw rootfs;
+$BB mount -o remount,rw /;
+
+cat << CTAG
+{
+    sections: [
+		`if [ -n "$DEVICE" ]; then
+			. /res/synapse/config.json.generate.status
+			$BB echo ','
+			. /res/synapse/config.json.generate.cpu
+			$BB echo ','
+			. /res/synapse/config.json.generate.cpuvolt
+			$BB echo ','
+			. /res/synapse/config.json.generate.gamma
+			$BB echo ','
+			. /res/synapse/config.json.generate.gpu
+			$BB echo ','
+			. /res/synapse/config.json.generate.hotplug
+			$BB echo ','
+			. /res/synapse/config.json.generate.io
+			$BB echo ','
+			. /res/synapse/config.json.generate.memory
+			$BB echo ','
+			. /res/synapse/config.json.generate.misc
+			$BB echo ','
+			. /res/synapse/config.json.generate.profile
+			$BB echo ','
+			. /res/synapse/config.json.generate.sound
+			$BB echo ','
+			if [ -f "/sys/module/msm_thermal/parameters/limit_temp_degC" ]; then
+				. /res/synapse/config.json.generate.thermal
+				$BB echo ','
+			fi
+			. /res/synapse/config.json.generate.tools
+			$BB echo ','
+			if [ -f "/sys/android_touch/sweep2wake" ]; then
+				. /res/synapse/config.json.generate.wake
+				$BB echo ','
+			fi
+		fi`
+    ]
+}
+CTAG

@@ -1,0 +1,417 @@
+cat << CTAG
+{
+    name:CPU,
+    elements:[
+	{ SLiveLabel:{
+		title:"Scaling Frequencies",
+		description: "Scaling max-min frequencies are affected by thermal engine/driver, mpdecision hotplug driver and CPU Boost driver. You may enable and use MSM Limiter Driver below to make sure scaling frequencies are desired ranges MOST of the time. We do let other drivers affect scaling frequencies because this manipulation helps to achieve performance without compromising stability. Below live monitor reflects actual scaling max and min frequencies in MHz per CPU core.",
+		refresh:1000,
+		action:"live SCALINGFREQ"
+	}},
+	{ STitleBar:{
+		title:"MSM Limiter"
+	}},
+	{ SCheckBox:{
+		label:"Enable",
+		description:"This enables overriding of current CPU Max/Min Frequency. It also set CPU Max Frequency whenever device resumes and suspends and set CPU Min Frequency whenever device suspends. Below controls will work ONLY if MSM Limiter driver is enabled. Ideal max frequency should always be higher than min frequency and input boost frequency. Ideal min frequency should be lesser than max frequency, max screen off frequency and input boost frequency.",
+		default:`cat /sys/kernel/msm_limiter/limiter_enabled`,
+		action:"generic /sys/kernel/msm_limiter/limiter_enabled",
+	}},
+	{ SSeekBar:{
+       		title:"CPU0 Max Frequency",
+		description:"Set the maximum frequency the CPU0 scales up to. CPU0 is used for most critical kernel tasks, it is recommended not to reduce this frequency below 1.7 GHz,",
+		default:`cat /sys/kernel/msm_limiter/resume_max_freq_0`,
+		action:"generic /sys/kernel/msm_limiter/resume_max_freq_0",
+		values:{
+`
+			while read FREQ TIME; do
+				LABEL=$(expr $FREQ / 1000)
+				echo "$FREQ:\"${LABEL}MHz\", "
+			done < /sys/devices/system/cpu/cpu0/cpufreq/stats/time_in_state
+`
+		}
+	}},
+	{ SSeekBar:{
+       		title:"CPU1 Max Frequency",
+		description:"Set the maximum frequency the CPU1 scales up to.",
+		default:`cat /sys/kernel/msm_limiter/resume_max_freq_1`,
+		action:"generic /sys/kernel/msm_limiter/resume_max_freq_1",
+		values:{
+`
+			while read FREQ TIME; do
+				LABEL=$(expr $FREQ / 1000)
+				echo "$FREQ:\"${LABEL}MHz\", "
+			done < /sys/devices/system/cpu/cpu0/cpufreq/stats/time_in_state
+`
+		}
+	}},
+	{ SSeekBar:{
+       		title:"CPU2 Max Frequency",
+		description:"Set the maximum frequency the CPU2 scales up to.",
+		default:`cat /sys/kernel/msm_limiter/resume_max_freq_2`,
+		action:"generic /sys/kernel/msm_limiter/resume_max_freq_2",
+		values:{
+`
+			while read FREQ TIME; do
+				LABEL=$(expr $FREQ / 1000)
+				echo "$FREQ:\"${LABEL}MHz\", "
+			done < /sys/devices/system/cpu/cpu0/cpufreq/stats/time_in_state
+`
+		}
+	}},
+	{ SSeekBar:{
+       		title:"CPU3 Max Frequency",
+		description:"Set the maximum frequency the CPU3 scales up to.",
+		default:`cat /sys/kernel/msm_limiter/resume_max_freq_3`,
+		action:"generic /sys/kernel/msm_limiter/resume_max_freq_3",
+		values:{
+`
+			while read FREQ TIME; do
+				LABEL=$(expr $FREQ / 1000)
+				echo "$FREQ:\"${LABEL}MHz\", "
+			done < /sys/devices/system/cpu/cpu0/cpufreq/stats/time_in_state
+`
+		}
+	}},
+	{ SSeekBar:{
+       		title:"CPU Max Screen Off Frequency",
+		description:"Set the maximum frequency all CPUs scales up to when device is suspended.",
+		default:`cat /sys/kernel/msm_limiter/suspend_max_freq`,,
+		action:"generic /sys/kernel/msm_limiter/suspend_max_freq",
+		values:{
+`
+			while read FREQ TIME; do
+				LABEL=$(expr $FREQ / 1000)
+				echo "$FREQ:\"${LABEL}MHz\", "
+			done < /sys/devices/system/cpu/cpu0/cpufreq/stats/time_in_state
+`
+		}
+	}},
+	{ SSeekBar:{
+       		title:"CPU0 Min Frequency",
+		description:"Set the minimum frequency the CPU0 scales down to.",
+		default:`cat /sys/kernel/msm_limiter/suspend_min_freq_0`,
+		action:"generic /sys/kernel/msm_limiter/suspend_min_freq_0",
+		values:{
+`
+			while read FREQ TIME; do
+				LABEL=$(expr $FREQ / 1000)
+				echo "$FREQ:\"${LABEL}MHz\", "
+			done < /sys/devices/system/cpu/cpu0/cpufreq/stats/time_in_state
+`
+		}
+	}},
+	{ SSeekBar:{
+       		title:"CPU1 Min Frequency",
+		description:"Set the minimum frequency the CPU1 scales down to.",
+		default:`cat /sys/kernel/msm_limiter/suspend_min_freq_1`,
+		action:"generic /sys/kernel/msm_limiter/suspend_min_freq_1",
+		values:{
+`
+			while read FREQ TIME; do
+				LABEL=$(expr $FREQ / 1000)
+				echo "$FREQ:\"${LABEL}MHz\", "
+			done < /sys/devices/system/cpu/cpu0/cpufreq/stats/time_in_state
+`
+		}
+	}},
+	{ SSeekBar:{
+       		title:"CPU2 Min Frequency",
+		description:"Set the minimum frequency the CPU2 scales down to.",
+		default:`cat /sys/kernel/msm_limiter/suspend_min_freq_2`,
+		action:"generic /sys/kernel/msm_limiter/suspend_min_freq_2",
+		values:{
+`
+			while read FREQ TIME; do
+				LABEL=$(expr $FREQ / 1000)
+				echo "$FREQ:\"${LABEL}MHz\", "
+			done < /sys/devices/system/cpu/cpu0/cpufreq/stats/time_in_state
+`
+		}
+	}},
+	{ SSeekBar:{
+       		title:"CPU3 Min Frequency",
+		description:"Set the minimum frequency the CPU3 scales down to.",
+		default:`cat /sys/kernel/msm_limiter/suspend_min_freq_3`,
+		action:"generic /sys/kernel/msm_limiter/suspend_min_freq_3",
+		values:{
+`
+			while read FREQ TIME; do
+				LABEL=$(expr $FREQ / 1000)
+				echo "$FREQ:\"${LABEL}MHz\", "
+			done < /sys/devices/system/cpu/cpu0/cpufreq/stats/time_in_state
+`
+		}
+	}},
+	{ STitleBar:{
+		title:"CPU Boost",
+	}},
+	{ SDescription:{
+		description:"When certain important tasks migrate from a fast CPU to a slow CPU, CPU Boost Driver boosts the frequency of the slow CPU to at least as high as the fast CPU for a short duration. You can modify behavior of CPU Boost Driver below. CPU Boost helps alleviating poor user experience by elevating frequencies when required."
+	}},
+	{ SSeekBar:{
+		title:"Boost Duration",
+		description:"Sets boost period for which CPU is boosted when task migrates to slower CPU.",
+		min:0, max:120,
+		default:`cat /sys/module/cpu_boost/parameters/boost_ms`,
+		unit:" ms",
+		action:"generic /sys/module/cpu_boost/parameters/boost_ms",
+	}},
+	{ SSeekBar:{
+		title:"Input Boost Duration",
+		description:"Sets period for which idle CPU is boosted whenever there are incoming input/hotplug/wakeup_boost events. Keep this higher enough to get smoother experience on your rocking device.",
+		min:0, max:1000, step: 10,
+		default:`cat /sys/module/cpu_boost/parameters/input_boost_ms`,
+		unit:" ms",
+		action:"generic /sys/module/cpu_boost/parameters/input_boost_ms",
+	}},
+	{ SSeekBar:{
+       		title:"CPU0 Input Boost Frequency",
+		description:"Set the input boost frequency for CPU0.",
+		default:1497600,
+		action:"cpuboostibf 0",
+		values:{
+			0:"Disabled",
+`
+			while read FREQ TIME; do
+				LABEL=$(expr $FREQ / 1000)
+				echo "$FREQ:\"${LABEL}MHz\", "
+			done < /sys/devices/system/cpu/cpu0/cpufreq/stats/time_in_state
+`
+		}
+	}},
+	{ SSeekBar:{
+       		title:"CPU1 Input Boost Frequency",
+		description:"Set the input boost frequency for CPU1.",
+		default:1497600,
+		action:"cpuboostibf 1",
+		values:{
+			0:"Disabled",
+`
+			while read FREQ TIME; do
+				LABEL=$(expr $FREQ / 1000)
+				echo "$FREQ:\"${LABEL}MHz\", "
+			done < /sys/devices/system/cpu/cpu0/cpufreq/stats/time_in_state
+`
+		}
+	}},
+	{ SSeekBar:{
+       		title:"CPU2 Input Boost Frequency",
+		description:"Set the input boost frequency for CPU2.",
+		default:1497600,
+		action:"cpuboostibf 2",
+		values:{
+			0:"Disabled",
+`
+			while read FREQ TIME; do
+				LABEL=$(expr $FREQ / 1000)
+				echo "$FREQ:\"${LABEL}MHz\", "
+			done < /sys/devices/system/cpu/cpu0/cpufreq/stats/time_in_state
+`
+		}
+	}},
+	{ SSeekBar:{
+       		title:"CPU3 Input Boost Frequency",
+		description:"Set the input boost frequency for CPU3.",
+		default:1497600,
+		action:"cpuboostibf 3",
+		values:{
+			0:"Disabled",
+`
+			while read FREQ TIME; do
+				LABEL=$(expr $FREQ / 1000)
+				echo "$FREQ:\"${LABEL}MHz\", "
+			done < /sys/devices/system/cpu/cpu0/cpufreq/stats/time_in_state
+`
+		}
+	}},
+	{ SSeekBar:{
+       		title:"Sync Threshold",
+		description:"During CPU Boost, frequency of slower CPU is matched with that of faster CPU, we can set limit to maximum frequency allowed for frequency synchronization. Should be greater or equal to Input Event Boost Frequency.",
+		default:`cat /sys/module/cpu_boost/parameters/sync_threshold`,
+		action:"generic /sys/module/cpu_boost/parameters/sync_threshold",
+		values:{
+`
+			while read FREQ TIME; do
+				LABEL=$(expr $FREQ / 1000)
+				echo "$FREQ:\"${LABEL}MHz\", "
+			done < /sys/devices/system/cpu/cpu0/cpufreq/stats/time_in_state
+`
+		}
+	}},
+	{ SCheckBox:{
+		label:"Scheduler Boost",
+		description:"Scheduler Boost move most/all tasks to the big cluster for short duration on an input event to improve performance.",
+		default:1,
+		action:"boolean /sys/module/cpu_boost/parameters/sched_boost_on_input",
+	}},
+	{ SCheckBox:{
+		label:"Hotplug Boost",
+		description:"Hotplug Boost is similar to input boost but it occurs when CPUs go online.",
+		default:1,
+		action:"boolean /sys/module/cpu_boost/parameters/hotplug_boost",
+	}},
+	{ SCheckBox:{
+		label:"Wakeup Boost",
+		description:"Wakeup Boost is similar to input boost but it occurs when screen is turned on.",
+		default:0,
+		action:"boolean /sys/module/cpu_boost/parameters/wakeup_boost",
+	}},
+	{ SPane:{
+		title:"Power-efficient Workqueues",
+	}},
+	{ SCheckBox:{
+		label:"Enable",
+		description:"This will help to reduce power consumption at the cost of slight performance overhead. PE workqueues are used for unbound scheduled work to save load on sibling CPU cores and queuing work on CPU0.",
+		default:1,
+		action:"boolean /sys/module/workqueue/parameters/power_efficient",
+	}},
+	{ STitleBar:{
+		title:"CPU Governor"
+	}},
+	{ SDescription:{
+		description:"The CPU governor determines how the respective CPU behaves in response to changes in workload. Changing the governor will impact how the CPU scales through the frequency steps available."
+	}},
+        { SOptionList:{
+		title:"CPU0",
+		default:`cat /sys/kernel/msm_limiter/scaling_governor_0`,
+                action:"generic /sys/kernel/msm_limiter/scaling_governor_0",
+                values:[
+`
+                        for GOVERNOR in \`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors\` ; do
+                                echo "\"$GOVERNOR\","
+                        done
+`
+                ],
+		notify:[
+			{
+				on:APPLY,
+				do:[ REFRESH, CANCEL ],
+				to:"/sys/devices/system/cpu/cpufreq"
+			},
+			{
+				on:REFRESH,
+				do:REFRESH,
+				to:"/sys/devices/system/cpu/cpufreq"
+			}
+
+		]
+        }},
+        { SOptionList:{
+		title:"CPU1",
+		default:`cat /sys/kernel/msm_limiter/scaling_governor_1`,
+                action:"generic /sys/kernel/msm_limiter/scaling_governor_1",
+                values:[
+`
+                        for GOVERNOR in \`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors\` ; do
+                                echo "\"$GOVERNOR\","
+                        done
+`
+                ],
+		notify:[
+			{
+				on:APPLY,
+				do:[ REFRESH, CANCEL ],
+				to:"/sys/devices/system/cpu/cpufreq"
+			},
+			{
+				on:REFRESH,
+				do:REFRESH,
+				to:"/sys/devices/system/cpu/cpufreq"
+			}
+		]
+        }},
+	{ SOptionList:{
+		title:"CPU2",
+		default:`cat /sys/kernel/msm_limiter/scaling_governor_2`,
+                action:"generic /sys/kernel/msm_limiter/scaling_governor_2",
+                values:[
+`
+                        for GOVERNOR in \`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors\` ; do
+                                echo "\"$GOVERNOR\","
+                        done
+`
+                ],
+		notify:[
+			{
+				on:APPLY,
+				do:[ REFRESH, CANCEL ],
+				to:"/sys/devices/system/cpu/cpufreq"
+			},
+			{
+				on:REFRESH,
+				do:REFRESH,
+				to:"/sys/devices/system/cpu/cpufreq"
+			}
+		]
+        }},
+	{ SOptionList:{
+		title:"CPU3",
+		default:`cat /sys/kernel/msm_limiter/scaling_governor_3`,
+                action:"generic /sys/kernel/msm_limiter/scaling_governor_3",
+                values:[
+`
+                        for GOVERNOR in \`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors\` ; do
+                                echo "\"$GOVERNOR\","
+                        done
+`
+                ],
+		notify:[
+			{
+				on:APPLY,
+				do:[ REFRESH, CANCEL ],
+				to:"/sys/devices/system/cpu/cpufreq"
+			},
+			{
+				on:REFRESH,
+				do:REFRESH,
+				to:"/sys/devices/system/cpu/cpufreq"
+			}
+		]
+        }},
+	{ STitleBar:{
+		title:"Governor tunables"
+        }},
+	{ STreeDescriptor:{
+		description:"The various configuration items which are governor-dependent.",
+		path:"/sys/devices/system/cpu/cpufreq",
+		generic: {
+			directory: {
+				STreeDescriptor:{
+					generic: {
+						directory: {},
+						element: {
+							SGeneric: { title:"@NAME" }
+						}
+					},
+					matched: {
+						elements: [
+							{ "sampling_rate" : {
+								SSeekBar: {
+									title:"Sampling rate",
+									description:"The sampling rate controls the frequency in which the governor polls for frequency changes.",
+									min:10000, max:300000, step:10000, unit:"ms"
+								}
+							}}
+						]
+					},
+					exclude: [
+						"boost_duration",
+						"boostpulse",
+						"cpu_utilization",
+						"sampling_rate_min",
+						"up_threshold_h",
+						"up_threshold_l",
+						"multi_phase_freq_tbl",
+						"profile_list",
+						"version_profiles",
+						"profile"
+					]
+				}
+			}
+		},
+		exclude: [ "kset", "stats" ]
+	}},
+    ]
+}
+CTAG

@@ -1,0 +1,174 @@
+cat << CTAG
+{
+    name:THERMAL,
+		elements:[
+			`[ -d "/sys/module/msm_thermal" ] && MSMTHERMAL=/sys/module/msm_thermal;
+			
+			if [ -d "$MSMTHERMAL/parameters" ]; then
+				if [ -f "$MSMTHERMAL/parameters/poll_ms" ]; then
+				PMS=\`$BB cat $MSMTHERMAL/parameters/poll_ms\`;
+					$BB echo '{ SSeekBar:{
+						title:"Poll",
+						unit:" ms",
+						step:10,
+						min:0,
+						max:3000,
+						default:'$PMS',
+						action:"generic '$MSMTHERMAL'/parameters/poll_ms"
+					}},'
+				fi
+				if [ -f "$MSMTHERMAL/parameters/limit_temp_degC" ]; then
+				LT=\`$BB cat $MSMTHERMAL/parameters/limit_temp_degC\`
+					$BB echo '{ SSeekBar:{
+						title:"Frequency Throttle Temperature",
+						description:"Temperature to start throttling frequencies.",
+						unit:"ºC",
+						step:1,
+						min:50,
+						max:100,
+						default:'$LT',
+						action:"generic '$MSMTHERMAL'/parameters/limit_temp_degC"
+					}},'
+				fi
+				if [ -f "$MSMTHERMAL/parameters/temp_hysteresis_degC" ]; then
+				TH=\`$BB cat $MSMTHERMAL/parameters/temp_hysteresis_degC\`;
+					$BB echo '{ SSeekBar:{
+						title:"Temperature Hysteresis",
+						unit:"ºC",
+						step:1,
+						min:0,
+						max:20,
+						default:'$TH',
+						action:"generic '$MSMTHERMAL'/parameters/temp_hysteresis_degC"
+					}},'
+				fi
+				if [ -f "$MSMTHERMAL/parameters/freq_control_mask" ]; then
+					$BB echo '{ SDescription:{
+						description:"Frequency Throttling Cores:"
+					}},
+					{ SDescription:{
+						description:"Cores to throttle frequency when temperature limit is reached."
+					}}
+					{ SCheckBox:{
+						label:"Core 0",
+						action:"intellithermal freq core0"
+					}},
+					{ SCheckBox:{
+						label:"Core 1",
+						action:"intellithermal freq core1"
+					}},
+					{ SCheckBox:{
+						label:"Core 2",
+						action:"intellithermal freq core2"
+					}},
+					{ SCheckBox:{
+						label:"Core 3",
+						action:"intellithermal freq core3"
+					}},'
+				fi
+				if [ -f "$MSMTHERMAL/parameters/freq_mitig_temp_degc" ]; then
+				LT=\`$BB cat $MSMTHERMAL/parameters/freq_mitig_temp_degc\`
+					$BB echo '{ SSeekBar:{
+						title:"Frequency Mitigation Temperature",
+						description:"Temperature to start mitigating CPU max frequencies. Mitigation should happen at highest temperature board can sustain.",
+						unit:"ºC",
+						step:1,
+						min:50,
+						max:110,
+						default:'$LT',
+						action:"generic '$MSMTHERMAL'/parameters/freq_mitig_temp_degc"
+					}},'
+				fi
+				if [ -f "$MSMTHERMAL/parameters/freq_mitig_temp_hysteresis_degc" ]; then
+				TH=\`$BB cat $MSMTHERMAL/parameters/freq_mitig_temp_hysteresis_degc\`;
+					$BB echo '{ SSeekBar:{
+						title:"Mitigation Temperature Hysteresis",
+						unit:"ºC",
+						step:1,
+						min:0,
+						max:30,
+						default:'$TH',
+						action:"generic '$MSMTHERMAL'/parameters/freq_mitig_temp_hysteresis_degc"
+					}},'
+				fi
+				if [ -f "$MSMTHERMAL/parameters/freq_mitig_control_mask" ]; then
+					$BB echo '{ SDescription:{
+						description:"Frequency Mitigating Cores:"
+					}},
+					{ SDescription:{
+						description:"Cores to mitigate frequency when mitigation temperature limit is reached."
+					}}
+					{ SCheckBox:{
+						label:"Core 0",
+						action:"intellithermal freq_mitig core0"
+					}},
+					{ SCheckBox:{
+						label:"Core 1",
+						action:"intellithermal freq_mitig core1"
+					}},
+					{ SCheckBox:{
+						label:"Core 2",
+						action:"intellithermal freq_mitig core2"
+					}},
+					{ SCheckBox:{
+						label:"Core 3",
+						action:"intellithermal freq_mitig core3"
+					}},'
+				fi
+				if [ -f "$MSMTHERMAL/parameters/core_temp_hysteresis_degC" ]; then
+				CTHG=\`$BB cat $MSMTHERMAL/parameters/core_temp_hysteresis_degC\`;
+					$BB echo '{ SSeekBar:{
+						title:"Core Temperature Hysteresis",
+						unit:"ºC",
+						step:1,
+						min:0,
+						max:20,
+						default:'$CTHG',
+						action:"generic '$MSMTHERMAL'/parameters/core_temp_hysteresis_degC"
+					}},'
+				fi
+				if [ -f "$MSMTHERMAL/parameters/freq_step" ]; then
+				FS=\`$BB cat $MSMTHERMAL/parameters/freq_step\`;
+					$BB echo '{ SSeekBar:{
+						title:"Frequency Step",
+						step:1,
+						min:1,
+						max:10,
+						default:'$FS',
+						action:"generic '$MSMTHERMAL'/parameters/freq_step"
+					}},'
+				fi
+				if [ -f "$MSMTHERMAL/parameters/thermal_limit_low" ]; then
+				TLL=\`$BB cat $MSMTHERMAL/parameters/thermal_limit_low\`;
+					$BB echo '{ SSeekBar:{
+						title:"Thermal Limit Low",
+						step:1,
+						min:1,
+						max:30,
+						default:'$TLL',
+						action:"generic '$MSMTHERMAL'/parameters/thermal_limit_low"
+					}},'
+				fi
+				if [ -f "$MSMTHERMAL/parameters/thermal_limit_high" ]; then
+				TLH=\`$BB cat $MSMTHERMAL/parameters/thermal_limit_high\`;
+					$BB echo '{ SSeekBar:{
+						title:"Thermal Limit High",
+						step:1,
+						min:1,
+						max:30,
+						default:'$TLH',
+						action:"generic '$MSMTHERMAL'/parameters/thermal_limit_high"
+					}},'
+				fi
+				if [ -f "$MSMTHERMAL/parameters/temp_safety" ]; then
+				TS=\`$BB cat $MSMTHERMAL/parameters/temp_safety\`;
+					$BB echo '{ SCheckBox:{
+						label:"Temperature Safety",
+						default:'$TS',
+						action:"generic '$MSMTHERMAL'/parameters/temp_safety"
+					}},'
+				fi
+			fi`
+		]
+}
+CTAG

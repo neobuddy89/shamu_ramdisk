@@ -1,0 +1,50 @@
+#!/sbin/busybox sh
+
+cat << CTAG
+{
+	name:STATUS,
+		elements:[
+			{ SLiveLabel:{
+				title:"Battery Temperature:",
+				refresh:3000,
+				action:"live BatteryTemperature"
+			}},
+			{ SLiveLabel:{
+				title:"CPU Temperature:",
+				refresh:3000,
+				action:"live CPUTemperature"
+			}},
+			{ SLiveLabel:{
+				title:"Memory:",
+				refresh:3000,
+				action:"live Memory"
+			}},
+			{ SLiveLabel:{
+				title:"Uptime:",
+				refresh:5000,
+				action:"live UpTime"
+			}},
+			{ SLiveLabel:{
+				title:"Unused States:",
+				refresh:5000,
+				action:"live UnUsed"
+			}},
+			{ SLiveLabel:{
+				title:"Time in States:",
+				refresh:5000,
+				action:"live Time 0 9"
+			}},
+			{ SLiveLabel:{
+				refresh:5000,
+				action:"live Time 10 19"
+			}},
+			`if [ -f "/proc/wakelocks" ]; then
+					echo '{ SLiveLabel:{
+					title:"Kernel Wakelocks (Top 10):",
+					refresh:1000,
+					action:"live WakelocksKernel"
+				}},'
+			fi`
+		]
+}
+CTAG
