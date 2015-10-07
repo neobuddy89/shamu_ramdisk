@@ -21,7 +21,6 @@ on early-init
 
 on init
     sysclktz 0
-    write /sys/fs/selinux/enforce 0
 
     # Backward compatibility.
     symlink /system/etc /etc
