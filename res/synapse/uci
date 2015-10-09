@@ -17,7 +17,7 @@ if [ ! -f $UCI_CONFIG ]; then
 	# Use this trigger to reset Synapse settings on boot.
 	# Just increment it for cases like default parameters are changed
 	# for some drivers and you wish user to use these parameters on boot.
-	KERNEL_CURR=20150915-marshmallow;
+	KERNEL_CURR=20151010-marshmallow;
 	
 	if [ ! -f "$SYNAPSE_SD_DIR/last_kernel" ]; then
 		$BB rm -R /data/data/com.af.synapse/databases;
@@ -37,16 +37,6 @@ if [ ! -f $UCI_CONFIG ]; then
 	if [ ! -f $DEBUG/pvs_bin ]; then
 		PVS=`$BB dmesg | $BB grep "\`sh $DEVICE DebugPVS\`"`;
 		$BB echo ${PVS##*:} > $DEBUG/pvs_bin;
-	fi
-	
-	if [ ! -f $DEBUG/speed_bin ]; then
-		SPEED=`$BB dmesg | $BB grep "\`sh $DEVICE DebugSPEED\`"`;
-		$BB echo ${SPEED##*:} > $DEBUG/speed_bin;
-	fi
-	
-	if [ ! -f $DEBUG/last_kmsg ]; then
-		LAST_KMSG=`$BB tail -n 1 /proc/last_kmsg`;
-		$BB echo $LAST_KMSG > $DEBUG/last_kmsg;
 	fi
 	
 	source /res/synapse/config.json.generate > $UCI_CONFIG;
