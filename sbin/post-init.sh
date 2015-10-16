@@ -98,7 +98,7 @@ pm enable com.google.android.gsf/.update.SystemUpdateService
 pm enable com.google.android.gsf/.update.SystemUpdateService$Receiver
 pm enable com.google.android.gsf/.update.SystemUpdateService$SecretCodeReceiver
 
-if [ ! -e /data/.selinux_disabled ]; then
+if [ -e /data/.selinux_enabled ]; then
 	setenforce 1
 fi;
 

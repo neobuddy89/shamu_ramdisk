@@ -15,10 +15,10 @@ case $1 in
 		if [[ ! -z $2 ]]; then
 			if [ $2 = "Enforcing" ]; then
 				setenforce 1;
-				$BB rm -f /data/.selinux_disabled 2> /dev/null;
+				$BB touch /data/.selinux_enabled 2> /dev/null;
 			elif [ $2 = "Permissive" ]; then
 				setenforce 0;
-				$BB touch /data/.selinux_disabled 2> /dev/null;
+				$BB rm -f /data/.selinux_enabled 2> /dev/null;
 			fi;
 		fi;
 
