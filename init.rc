@@ -9,6 +9,7 @@ import /init.usb.rc
 import /init.${ro.hardware}.rc
 import /init.${ro.zygote}.rc
 import /init.trace.rc
+# Include CM's extra init file
 import /init.cm.rc
 
 
@@ -61,6 +62,7 @@ on init
     write /sys/fs/cgroup/memory/sw/memory.move_charge_at_immigrate 1
     chown root system /sys/fs/cgroup/memory/sw/tasks
     chmod 0660 /sys/fs/cgroup/memory/sw/tasks
+    chmod 0220 /sys/fs/cgroup/memory/cgroup.event_control
 
     mkdir /system
     mkdir /data 0771 system system
@@ -558,7 +560,6 @@ service surfaceflinger /system/bin/surfaceflinger
     class core
     user system
     group graphics drmrpc
-    ioprio rt 6
     onrestart restart zygote
 
 service drm /system/bin/drmserver
