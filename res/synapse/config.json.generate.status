@@ -20,6 +20,12 @@ cat << CTAG
 				action:"live Memory"
 			}},
 			{ SLiveLabel:{
+				title:"ZRAM Stats:",
+				description:"Virtual compressed swap memory, add more usable free RAM by compressing real memory.",
+				refresh:3000,
+				action:"live ZRAMStats"
+			}},
+			{ SLiveLabel:{
 				title:"Uptime:",
 				refresh:5000,
 				action:"live UpTime"
