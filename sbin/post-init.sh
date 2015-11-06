@@ -37,6 +37,12 @@ echo "Boot initiated on $(date)" > /tmp/bootcheck;
 # Adaptive LMK
 echo 1 > /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk
 echo 53059 > /sys/module/lowmemorykiller/parameters/vmpressure_file_min
+echo 1 > /sys/module/process_reclaim/parameters/enable_process_reclaim
+echo 100 > /sys/module/process_reclaim/parameters/pressure_max
+echo 200 > /proc/sys/vm/dirty_expire_centisecs
+echo 20 > /proc/sys/vm/dirty_background_ratio
+echo 40 > /proc/sys/vm/dirty_ratio
+echo 0 > /proc/sys/vm/swappiness
 
 # Calibrate display
 echo "250 250 255" > /sys/devices/platform/kcal_ctrl.0/kcal
