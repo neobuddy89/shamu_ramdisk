@@ -15,7 +15,7 @@ cat << CTAG
 				unit:" MB",
 				step:10,
 				min:0,
-				max:1024, 
+				max:2048, 
 				default:'$ZRAM',
 				action:"zram /sys/devices/virtual/block/zram0/disksize"
 			}},'
@@ -26,19 +26,12 @@ cat << CTAG
 				title:"Compression Algorithm",
 				description:"Applying a different option will reset Z-RAM. LZ4 algorithm tends to have a faster decompression. More info: <a href='https://code.google.com/p/lz4/'>HERE</a>.",
 				default:'$CA',
-				action:"bracket-option /sys/block/zram0/comp_algorithm",
+				action:"zram-bracket-option /sys/block/zram0/comp_algorithm",
 				values:['
 					for COMPALG in \`$BB cat /sys/block/zram0/comp_algorithm | $BB sed -e "s/\]//;s/\[//"\`; do
 						echo "\"$COMPALG\",";
 					done;
 				$BB echo '],
-				notify:[
-					{
-						on:APPLY,
-						do:[ RESET, REFRESH, APPLY ],
-						to:"zram /sys/devices/virtual/block/zram0/disksize"
-					}
-				]
 			}},'
 		fi`
 		`if [ -f "/sys/block/zram0/max_comp_streams" ]; then
@@ -49,14 +42,7 @@ cat << CTAG
 				min:1,	max:5,
 				step:1,
 				default:'$MCS',
-				action:"generic /sys/block/zram0/max_comp_streams",
-				notify:[
-					{
-						on:APPLY,
-						do:[ RESET, REFRESH, APPLY ],
-						to:"zram /sys/devices/virtual/block/zram0/disksize"
-					}
-				]
+				action:"zram-generic /sys/block/zram0/max_comp_streams",
 			}},'
 		fi`
 		`if [ -f "/sys/kernel/mm/ksm/run" ]; then
