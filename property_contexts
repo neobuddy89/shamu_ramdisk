@@ -32,7 +32,7 @@ debug.                  u:object_r:debug_prop:s0
 debug.db.               u:object_r:debuggerd_prop:s0
 log.                    u:object_r:shell_prop:s0
 service.adb.root        u:object_r:shell_prop:s0
-service.adb.tcp.port    u:object_r:shell_prop:s0
+service.adb.tcp.port*   u:object_r:shell_prop:s0
 
 persist.audio.          u:object_r:audio_prop:s0
 persist.logd.           u:object_r:logd_prop:s0
@@ -79,3 +79,8 @@ dalvik.                 u:object_r:dalvik_prop:s0
 sys.ims.        u:object_r:qcom_ims_prop:s0
 net.r_rmnet     u:object_r:qcom_netmgrd_prop:s0
 ctl.mpdecision  u:object_r:ctl_mpdecision:s0
+#line 1 "vendor/cm/sepolicy/property_contexts"
+service.adb.tcp.port          u:object_r:adbtcp_prop:s0
+recovery.perf.mode            u:object_r:recovery_prop:s0
+adb.secure                    u:object_r:recovery_prop:s0
+cm.userinit.active            u:object_r:userinit_prop:s0

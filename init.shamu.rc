@@ -25,9 +25,6 @@ on early-init
     chown system system /sys/kernel/debug/kgsl/proc
 
 on init
-    # Load persistent dm-verity state
-    verity_load_state
-
     mkdir /oem 0550 root root
 
     # Set permissions for persist partition
@@ -63,12 +60,6 @@ on fs
     setprop persist.data.wda.enable true
     setprop persist.data.df.agg.dl_pkt 10
     setprop persist.data.df.agg.dl_size 4096
-
-    # Adjust parameters for dm-verity device
-    write /sys/block/dm-0/queue/read_ahead_kb 2048
-
-    # Update dm-verity state and set partition.*.verified properties
-    verity_update_state
 
 on post-fs-data
     mkdir /tombstones/modem 0771 system system
@@ -240,6 +231,23 @@ on boot
     chown media media /sys/devices/c55_ctrl/gpio_c55_int/value
     chown media media /sys/devices/c55_ctrl/gpio_core/value
     chown media media /sys/devices/c55_ctrl/gpio_reset/value
+
+    # LED permissions
+    chmod 664 /sys/class/leds/red/brightness
+    chmod 664 /sys/class/leds/green/brightness
+    chmod 664 /sys/class/leds/blue/brightness
+
+    # Vibrator permissions
+    chown system system /sys/vibrator/pwmvalue
+    chmod 0644 /sys/vibrator/pwmvalue
+
+    # Display color calibration
+    chown system system /sys/devices/virtual/graphics/fb0/rgb
+    chmod 0660 /sys/devices/virtual/graphics/fb0/rgb
+
+    # Sunlight Enhancement mode
+    chown system system /sys/devices/virtual/graphics/fb0/sre
+    chmod 0660 /sys/devices/virtual/graphics/fb0/sre
 
 # subsystem ramdump collection
 on property:persist.sys.qc.sub.rdump.on=*
@@ -566,9 +574,6 @@ service bdAddrLoader /system/bin/bdAddrLoader -p ro.boot.btmacaddr -s -x
 
 on property:vold.decrypt=trigger_reset_main
     stop gnss-svcd
-
-on verity-logging
-    exec u:r:slideshow:s0 -- /sbin/slideshow warning/verity_red_1 warning/verity_red_2
 
 # When QCA1530 is known not to present
 on property:persist.qca1530=no
