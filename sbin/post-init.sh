@@ -1,57 +1,65 @@
 #!/sbin/busybox sh
 
+BB=/sbin/busybox;
+
 # Mount root as RW to apply tweaks and settings
-mount -o remount,rw /;
-mount -o rw,remount /system
+$BB mount -o remount,rw /;
+$BB mount -o rw,remount /system
 
 # Cleanup conflicts
 if [ -e /system/etc/sysctl.conf ]; then
-	mv /system/etc/sysctl.conf /system/etc/sysctl.conf-bak;
+	$BB mv /system/etc/sysctl.conf /system/etc/sysctl.conf-bak;
 fi;
-rm -f /system/etc/init.d/N4UKM;
-rm -f /system/etc/init.d/UKM;
-rm -f /system/etc/init.d/UKM_WAKE;
-rm -f /system/xbin/uci;
-rm -rf /data/UKM;
-rm -rf /data/data/leankernel;
+$BB rm -f /system/etc/init.d/N4UKM;
+$BB rm -f /system/etc/init.d/UKM;
+$BB rm -f /system/etc/init.d/UKM_WAKE;
+$BB rm -f /system/xbin/uci;
+$BB rm -rf /data/UKM;
+$BB rm -rf /data/data/leankernel;
 if [ -e /system/xbin/zip ]; then
-	rm -f /sbin/zip;
+	$BB rm -f /sbin/zip;
 fi;
 
 # Make tmp folder
-mkdir /tmp;
+$BB mkdir /tmp;
 
 # Give permissions to execute
-chown -R root:system /tmp/;
-chmod -R 777 /tmp/;
-chmod -R 777 /res/;
-chmod 6755 /res/synapse/actions/*;
-chmod 6755 /sbin/*;
-chmod 6755 /system/xbin/*;
-echo "Boot initiated on $(date)" > /tmp/bootcheck;
+$BB chown -R root:system /tmp/;
+$BB chmod -R 777 /tmp/;
+$BB chmod -R 777 /res/;
+$BB chmod 6755 /res/synapse/actions/*;
+$BB chmod 6755 /sbin/*;
+$BB chmod 6755 /system/xbin/*;
+$BB echo "Boot initiated on $(date)" > /tmp/bootcheck;
 
 # Tune LMK with values we love
-#echo "1536,2048,4096,16384,28672,32768" > /sys/module/lowmemorykiller/parameters/minfree
-#echo 32 > /sys/module/lowmemorykiller/parameters/cost
+#$BB echo "1536,2048,4096,16384,28672,32768" > /sys/module/lowmemorykiller/parameters/minfree
+#$BB echo 32 > /sys/module/lowmemorykiller/parameters/cost
 
 # Adaptive LMK
-echo 1 > /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk
-echo 53059 > /sys/module/lowmemorykiller/parameters/vmpressure_file_min
-echo 1 > /sys/module/process_reclaim/parameters/enable_process_reclaim
-echo 100 > /sys/module/process_reclaim/parameters/pressure_max
-echo 200 > /proc/sys/vm/dirty_expire_centisecs
-echo 20 > /proc/sys/vm/dirty_background_ratio
-echo 40 > /proc/sys/vm/dirty_ratio
-echo 0 > /proc/sys/vm/swappiness
+$BB echo 1 > /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk
+$BB echo 53059 > /sys/module/lowmemorykiller/parameters/vmpressure_file_min
+$BB echo 1 > /sys/module/process_reclaim/parameters/enable_process_reclaim
+$BB echo 100 > /sys/module/process_reclaim/parameters/pressure_max
+$BB echo 200 > /proc/sys/vm/dirty_expire_centisecs
+$BB echo 20 > /proc/sys/vm/dirty_background_ratio
+$BB echo 40 > /proc/sys/vm/dirty_ratio
+$BB echo 0 > /proc/sys/vm/swappiness
 
 # Calibrate display
-echo "250 250 255" > /sys/devices/platform/kcal_ctrl.0/kcal
-echo 243 > /sys/devices/platform/kcal_ctrl.0/kcal_sat
-echo 1515 > /sys/devices/platform/kcal_ctrl.0/kcal_hue
-echo 250 > /sys/devices/platform/kcal_ctrl.0/kcal_val
+$BB echo "250 250 255" > /sys/devices/platform/kcal_ctrl.0/kcal
+$BB echo 243 > /sys/devices/platform/kcal_ctrl.0/kcal_sat
+$BB echo 1515 > /sys/devices/platform/kcal_ctrl.0/kcal_hue
+$BB echo 250 > /sys/devices/platform/kcal_ctrl.0/kcal_val
+
+# Tweak VM
+$BB echo 200 > /proc/sys/vm/dirty_expire_centisecs
+$BB echo 20 > /proc/sys/vm/dirty_background_ratio
+$BB echo 40 > /proc/sys/vm/dirty_ratio
+$BB echo 0 > /proc/sys/vm/swappiness
 
 # Install Busybox
-/sbin/busybox --install -s /sbin
+$BB --install -s /sbin
 
 # Allow untrusted apps to read from debugfs
 if [ -e /system/lib/libsupol.so ]; then
@@ -80,7 +88,7 @@ if [ -e /system/lib/libsupol.so ]; then
 	"allow netmgrd netmgrd socket { read write open ioctl }"
 fi;
 
-ln -s /res/synapse/uci /sbin/uci
+$BB ln -s /res/synapse/uci /sbin/uci
 /sbin/uci
 
 # Init.d Support
@@ -98,7 +106,7 @@ pm enable com.google.android.gsf/.update.SystemUpdateService
 pm enable com.google.android.gsf/.update.SystemUpdateService$Receiver
 pm enable com.google.android.gsf/.update.SystemUpdateService$SecretCodeReceiver
 
-if [ ! -e /data/.selinux_disabled ]; then
+if [ -e /data/.selinux_enabled ]; then
 	setenforce 1
 fi;
 

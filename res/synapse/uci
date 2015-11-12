@@ -17,7 +17,7 @@ if [ ! -f $UCI_CONFIG ]; then
 	# Use this trigger to reset Synapse settings on boot.
 	# Just increment it for cases like default parameters are changed
 	# for some drivers and you wish user to use these parameters on boot.
-	KERNEL_CURR=20151010-lollipop;
+	KERNEL_CURR=20151112-lollipop;
 	
 	if [ ! -f "$SYNAPSE_SD_DIR/last_kernel" ]; then
 		$BB rm -R /data/data/com.af.synapse/databases;
@@ -35,8 +35,7 @@ if [ ! -f $UCI_CONFIG ]; then
 	$BB chmod -R 755 $UCI_ACTION;
 	
 	if [ ! -f $DEBUG/pvs_bin ]; then
-		PVS=`$BB dmesg | $BB grep "\`sh $DEVICE DebugPVS\`"`;
-		$BB echo ${PVS##*:} > $DEBUG/pvs_bin;
+		$BB echo `sh $DEVICE DebugPVS` > $DEBUG/pvs_bin;
 	fi
 	
 	source /res/synapse/config.json.generate > $UCI_CONFIG;
