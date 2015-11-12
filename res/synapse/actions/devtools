@@ -3,6 +3,7 @@ DEVICE=/res/synapse/files/shamu.sh;
 
 TIMESTAMP=`date +%Y-%m-%d.%H.%M.%S`;
 LOGS=/sdcard/logs;
+DEBUG=/res/synapse/debug;
 
 case $1 in
 	bootloader)	
@@ -70,7 +71,8 @@ case $1 in
 		dmsg="$LOGS/$TIMESTAMP/dmesg.txt";
 		logcat -d > $logmsg;
 		$BB dmesg > $dmsg;
-		$BB cp /sys/fs/pstore/* $LOGS/$TIMESTAMP/
+		$BB cp $DEBUG/* $LOGS/$TIMESTAMP/ 2> /dev/null;
+		$BB cp /sys/fs/pstore/* $LOGS/$TIMESTAMP/ 2> /dev/null;
 		cd $LOGS/$TIMESTAMP/
 		zip -r logs.zip .
 		$BB mv $LOGS/$TIMESTAMP/logs.zip $LOGS/logs-$TIMESTAMP.zip

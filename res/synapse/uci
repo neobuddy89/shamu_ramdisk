@@ -35,8 +35,7 @@ if [ ! -f $UCI_CONFIG ]; then
 	$BB chmod -R 755 $UCI_ACTION;
 	
 	if [ ! -f $DEBUG/pvs_bin ]; then
-		PVS=`$BB dmesg | $BB grep "\`sh $DEVICE DebugPVS\`"`;
-		$BB echo ${PVS##*:} > $DEBUG/pvs_bin;
+		$BB echo `sh $DEVICE DebugPVS` > $DEBUG/pvs_bin;
 	fi
 	
 	source /res/synapse/config.json.generate > $UCI_CONFIG;

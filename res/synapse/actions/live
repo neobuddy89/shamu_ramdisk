@@ -24,15 +24,7 @@ case $1 in
 		fi
 	;;
 	PVSbin)
-		if [ -e /sys/module/clock_krait_8974/parameters/table_name ]; then
-			PVS="$(expr `cat /sys/module/clock_krait_8974/parameters/table_name`)"
-			echo $PVS
-		elif [ -e /sys/module/acpuclock_krait/parameters/pvs_number ]; then
-			PVS="$(expr `cat /sys/module/acpuclock_krait/parameters/pvs_number`)"
-			echo $PVS
-		else
-			echo PVS bin not found.
-		fi
+		$BB echo `sh $DEVICE DebugPVS`;
 	;;
 	CORESTATUS)
 		CORE_0="$(expr `cat /sys/kernel/msm_limiter/live_cur_freq_0` / 1000)MHz"

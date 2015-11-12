@@ -15,7 +15,15 @@ case "$1" in
 		done;
 	;;
 	DebugPVS)
-		$BB echo "ACPU PVS";
+		if [ -e /sys/module/clock_krait_8974/parameters/table_name ]; then
+			PVS="$(expr `cat /sys/module/clock_krait_8974/parameters/table_name`)"
+			$BB echo $PVS
+		elif [ -e /sys/module/acpuclock_krait/parameters/pvs_number ]; then
+			PVS="$(expr `cat /sys/module/acpuclock_krait/parameters/pvs_number`)"
+			$BB echo $PVS
+		else
+			$BB echo PVS bin not found.
+		fi
 	;;
 	DebugSPEED)
 		$BB echo "SPEED BIN";
