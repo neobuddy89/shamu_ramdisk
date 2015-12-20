@@ -548,6 +548,7 @@ service qseecomd /system/bin/qseecomd
 service mpdecision /system/bin/mpdecision --avg_comp
    class main
    user root
+   group system
    writepid /dev/cpuset/system-background/tasks
 
 service ss_ramdump /system/bin/subsystem_ramdump
