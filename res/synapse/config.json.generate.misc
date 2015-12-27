@@ -47,16 +47,16 @@ cat << CTAG
 				}},'
 			fi
 		fi`
-		`if [ -f "/sys/module/state_notifier/parameters/use_fb_notifier_0" ]; then
-			SN=\`bool /sys/module/state_notifier/parameters/use_fb_notifier\`
+		`if [ -f "/sys/module/state_notifier/parameters/enabled" ]; then
+			SN=\`bool /sys/module/state_notifier/parameters/enabled\`
 			$BB echo '{ SPane:{
-			title:"Framebuffer Notifiers"
+			title:"State Notifier"
 			}},
 				{ SCheckBox:{
-					label:"Use FB notifiers (Experimental)",
-					description:"If enabled, many drivers like hotplug, cpu-boost and limiter driver will use FB notifiers instead of State notifers. FB notifiers are useful only when Ambient mode is enabled and will contribute to power conservation by preventing calls to resume routines after suspend if screen is turned on due to Ambient mode notifications.",
+					label:"State Notifier Driver",
+					description:"State Notifier Driver is used by multiple drivers to perform functions when device suspends and resumes from deep sleep and thereby contributes to system maintenance, optimization, performance and power saving. Disable this driver only if necessary.",
 					default:'$SN',
-					action:"boolean /sys/module/state_notifier/parameters/use_fb_notifier"
+					action:"boolean /sys/module/state_notifier/parameters/enabled"
 				}},'
 		fi`
 		`if [ -f "/sys/kernel/fast_charge/force_fast_charge" ] && [ ! -f "/sys/kernel/fast_charge/fast_charge_level" ]; then
