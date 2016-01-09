@@ -104,6 +104,9 @@ on property:dev.bootcomplete=1
     # Enable Power modes
     write /sys/module/lpm_levels/parameters/sleep_disabled 0
 
+    # Enable State Notifier
+    write /sys/module/state_notifier/parameters/enabled 1
+
     # Hail Hydra!!
     start postinit
 
