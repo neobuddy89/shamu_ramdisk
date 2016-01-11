@@ -178,6 +178,10 @@ cat << CTAG
 			WS=\`bool /sys/module/wakeup/parameters/enable_si_ws\`
 			HWS=\`bool /sys/module/wakeup/parameters/enable_msm_hsic_ws\`
 			SWS=\`bool /sys/module/smb135x_charger/parameters/use_wlock\`
+			BWS=\`bool /sys/module/wakeup/parameters/enable_bluesleep_ws\`
+			WRS=\`bool /sys/module/wakeup/parameters/enable_wlan_rx_wake_ws\`
+			WCS=\`bool /sys/module/wakeup/parameters/enable_wlan_ctrl_wake_ws\`
+			WWS=\`bool /sys/module/wakeup/parameters/enable_wlan_wake_ws\`
 				$BB echo '{ SPane:{
 					title:"Wakeup Sources",
 					description:"Disable wakeup sources to reduce wake locks. Leave them to default values if unsure.",
@@ -196,6 +200,26 @@ cat << CTAG
 						label:"Enable smb135x_charger wakeup source",
 						default:'$SWS',
 						action:"boolean /sys/module/smb135x_charger/parameters/use_wlock"
+					}},
+					{ SCheckBox:{
+						label:"Enable bluesleep wakeup source",
+						default:'$BWS',
+						action:"boolean /sys/module/wakeup/parameters/enable_bluesleep_ws"
+					}},
+					{ SCheckBox:{
+						label:"Enable wlan_rx_wake wakeup source",
+						default:'$WRS',
+						action:"boolean /sys/module/wakeup/parameters/enable_wlan_rx_wake_ws"
+					}},
+					{ SCheckBox:{
+						label:"Enable wlan_ctrl_wake wakeup source",
+						default:'$WCS',
+						action:"boolean /sys/module/wakeup/parameters/enable_wlan_ctrl_wake_ws"
+					}},
+					{ SCheckBox:{
+						label:"Enable wlan_wake wakeup source",
+						default:'$WWS',
+						action:"boolean /sys/module/wakeup/parameters/enable_wlan_wake_ws"
 					}},'
 		fi`
 		`if [ -f "/sys/kernel/sched/gentle_fair_sleepers" ]; then
