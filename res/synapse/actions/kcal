@@ -1,12 +1,45 @@
 BB=/sbin/busybox;
 
-if [ -f $1 ]; then
-	if [[ ! -z "$2" ]]; then
-		$BB echo "$2" > $1 2> /dev/null;
-		[ -f "/sys/devices/platform/kcal_ctrl.0/kcal_ctrl" ] && $BB echo 1 > /sys/devices/platform/kcal_ctrl.0/kcal_ctrl;
-	fi;
-	
-	$BB echo "`$BB cat $1`";
-else
-	$BB echo "0";
+P=/sys/devices/platform/kcal_ctrl.0/kcal;
+
+read() {
+	VALUE=0;
+	NOW=`$BB cat $P`;
+	for VAL in ${NOW}; do
+		VALUE=$(($VALUE+1));
+		if [ "$VALUE" == $1 ]; then
+			$BB echo $VAL;
+			return
+		fi;
+	done;
+}
+
+write() {
+	SET=$2;
+	VALARR="";
+	VALUE=0;
+	NOW=`$BB cat $P`;
+	for VAL in ${NOW}; do
+		VALUE=$(($VALUE+1));
+		if [ "$VALUE" == $1 ]; then
+			if [ "$VALUE" == 1 ]; then
+				VALARR="$SET";
+			else
+				VALARR="$VALARR $SET";
+			fi;
+		else
+			if [ "$VALUE" == 1 ]; then
+				VALARR="$VAL";
+			else
+				VALARR="$VALARR $VAL";
+			fi;
+		fi;
+	done;
+	$BB echo ${VALARR} > $P;
+}
+
+if [[ ! -z $2 ]]; then
+	write $1 $2;
 fi;
+
+$BB echo $(read $1);

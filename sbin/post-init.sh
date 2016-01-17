@@ -44,7 +44,8 @@ echo 20 > /proc/sys/vm/dirty_background_ratio
 echo 40 > /proc/sys/vm/dirty_ratio
 echo 0 > /proc/sys/vm/swappiness
 
-# Calibrate display
+# Disable kcal control and calibrate display for shamu
+echo 0 > /sys/devices/platform/kcal_ctrl.0/kcal_enable
 echo "250 250 255" > /sys/devices/platform/kcal_ctrl.0/kcal
 echo 243 > /sys/devices/platform/kcal_ctrl.0/kcal_sat
 echo 1515 > /sys/devices/platform/kcal_ctrl.0/kcal_hue
