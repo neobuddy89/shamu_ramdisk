@@ -71,17 +71,6 @@ cat << CTAG
 					action:"generic /sys/kernel/fast_charge/force_fast_charge"
 				}},'
 		fi`
-		{ STitleBar:{
-			title:"TCP Congestion Control"
-		}},
-			{ SOptionList:{
-				description:"Set the algorithm of internet congestion avoidance, to possibly improve speeds and load times. More info: <a href='https://en.wikipedia.org/wiki/TCP_congestion-avoidance_algorithm'>HERE</a>",
-				default:`$BB cat \`sh $DEVICE DirTCPCongestion\``,
-				action:"generic `sh $DEVICE DirTCPCongestion`",
-				values:[
-					`sh $DEVICE TCPCongestionList`
-				]
-			}},
 		`if [ -f "sys/vibrator/pwmvalue" ]; then
 		VIBRATOR=\`$BB cat /sys/vibrator/pwmvalue\`
 			$BB echo '{ SPane:{

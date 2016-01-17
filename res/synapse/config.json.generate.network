@@ -1,0 +1,40 @@
+#!/sbin/busybox sh
+
+cat << CTAG
+{
+    name:NETWORK,
+    elements:[
+		{ STitleBar:{
+			title:"TCP Congestion Control"
+		}},
+			{ SOptionList:{
+				description:"Set the algorithm of internet congestion avoidance, to possibly improve speeds and load times. More info: <a href='https://en.wikipedia.org/wiki/TCP_congestion-avoidance_algorithm'>HERE</a>",
+				default:`$BB cat \`sh $DEVICE DirTCPCongestion\``,
+				action:"generic `sh $DEVICE DirTCPCongestion`",
+				values:[
+					`sh $DEVICE TCPCongestionList`
+				]
+			}},
+		`if [ -f "/proc/sys/net/ipv6/conf/all/optimistic_dad" ]; then
+		OD=\`$BB cat /proc/sys/net/ipv6/conf/all/optimistic_dad\`
+		UO=\`$BB cat /proc/sys/net/ipv6/conf/all/use_optimistic\`
+			$BB echo '{ SPane:{
+				title:"IPv6 Optimistic DAD",
+				description:"It minimizes address configuration delays for networks using IPv6."
+			}},
+				{ SCheckBox:{
+					label:"Enable Optimistic DAD",
+					description:"Whether to perform Optimistic Duplicate Address Detection",
+					default:'$OD',
+					action:"generic /proc/sys/net/ipv6/conf/all/optimistic_dad",
+				}},
+				{ SCheckBox:{
+					label:"Enable use optimistic addresses",
+					description:"If enabled, preferred addresses will still be chosen before optimistic addresses depending on source algorithm.",
+					default:'$UO',
+					action:"generic /proc/sys/net/ipv6/conf/all/use_optimistic",
+				}},'
+		fi`
+    ]
+}
+CTAG
