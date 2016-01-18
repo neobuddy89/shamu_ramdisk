@@ -52,10 +52,11 @@ echo 1515 > /sys/devices/platform/kcal_ctrl.0/kcal_hue
 echo 250 > /sys/devices/platform/kcal_ctrl.0/kcal_val
 
 # Tweak VM
-echo 200 > /proc/sys/vm/dirty_expire_centisecs
 echo 20 > /proc/sys/vm/dirty_background_ratio
+echo 200 > /proc/sys/vm/dirty_expire_centisecs
 echo 40 > /proc/sys/vm/dirty_ratio
 echo 0 > /proc/sys/vm/swappiness
+echo 80 > /proc/sys/vm/vfs_cache_pressure
 
 # Install Busybox
 /sbin/busybox --install -s /sbin
