@@ -2,6 +2,14 @@ BB=/sbin/busybox;
 DEVICE=/res/synapse/files/shamu.sh;
 
 case $1 in
+	CHECKCRON)
+		CRON_SERVICE=$(pidof crond | wc -l);
+		if [ "$CRON_SERVICE" -eq "1" ]; then
+			echo "Cron Service is Running";
+		else
+			echo "Cron Service is Offline";
+		fi;
+	;;
 	SCALINGFREQ)
 		FREQMAX_0="$(expr `cat /sys/kernel/msm_limiter/live_max_freq_0` / 1000)MHz"
 		FREQMIN_0="$(expr `cat /sys/kernel/msm_limiter/live_min_freq_0` / 1000)MHz"

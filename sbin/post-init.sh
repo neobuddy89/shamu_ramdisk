@@ -87,6 +87,13 @@ if [ -e /system/lib/libsupol.so ]; then
 	"allow netmgrd netmgrd socket { read write open ioctl }"
 fi;
 
+# Copy Cron files
+cp -af /res/crontab/ /sdcard/Synapse
+if [ ! -e /sdcard/Synapse/crontab/custom_jobs ]; then
+	touch /sdcard/Synapse/crontab/custom_jobs;
+	chmod 777 /sdcard/Synapse/crontab/custom_jobs;
+fi;
+
 ln -s /res/synapse/uci /sbin/uci
 cd /
 /sbin/uci

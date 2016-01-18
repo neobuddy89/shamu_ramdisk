@@ -1,0 +1,67 @@
+#!/sbin/busybox sh
+
+cat << CTAG
+{
+    name:CRON,
+    elements:[
+	{ SPane:{
+		title:"Cron Service",
+		description:"Cron is a service used to execute desired tasks (in the background) at designated times."
+	}},
+	{ SCheckBox:{
+		label:"Enable",
+		description:"If disabled, cron tasks scheduled below will not be  executed.",
+		default:`echo $(/res/synapse/actions/crontab master)`,
+		action:"crontab master",
+        }},
+	{ SLiveLabel:{
+		title:"Cron Service Status",
+		refresh:3000,
+		action:"live CHECKCRON"
+        }},
+	{ SPane:{
+		title:"Crontab Tasks",
+		description:"Here you can enable Crontab Tasks to run at designated times. Cron Service must be running for these task to execute successfully."
+	}},
+	{ SCheckBox:{
+		label:"Clean app-cache",
+		description:"Clear app-cache every day at 4:30AM, only if CPU is resting (IDLE)! This can maintain free space on data partition, and clean all old junk.",
+		default:`echo $(/res/synapse/actions/crontab cache)`,
+		action:"crontab cache",
+	}},
+	{ SCheckBox:{
+		label:"Clean RAM cache",
+		description:"Clear RAM-cache every hour, but only if CPU is resting (IDLE) and more than 50% of your memory is used! This will free RAM from unused buffers and cache.",
+		default:`echo $(/res/synapse/actions/crontab drop_cache)`,
+		action:"crontab drop_cache",
+	}},
+	{ SCheckBox:{
+		label:"File System Trim",
+		description:"Cron to trim System, Data and Cache partitions every day at 4:50AM, only if CPU is resting (IDLE)! This will help retain consistant IO throughput.",
+		default:`echo $(/res/synapse/actions/crontab fstrim)`,
+		action:"crontab fstrim",
+	}},
+	{ SCheckBox:{
+		label:"Google Service restart",
+		description:"Restart Google Services to release memory leak and CPU non-stop activity. This is one of the LP RAM leak BUGS where the Service can get stuck, drain RAM, and force CPU to work non-stop. Fix this by restarting the service every 3 hours.",
+		default:`echo $(/res/synapse/actions/crontab google)`,
+		action:"crontab google",
+		values:[Disabled, Enabled,]
+	}},
+	{ SCheckBox:{
+		label:"Optimize Databases",
+		description:"Optimize all databases found in /data & /sdcard every day at 4:40AM, only if CPU is resting (IDLE)! This increases database read/write performance.",
+		default:`echo $(/res/synapse/actions/crontab sqlite)`,
+		action:"crontab sqlite",
+	}},
+	{ SPane:{
+		title:"Check Crontab Tasks",
+		description:"Use this button to check if Crontab Tasks are done as requested. This will show the log for all finished jobs."
+	}},
+	{ SButton:{
+		label:"Check Jobs",
+		action:"crontab log"
+	}},
+    ]
+}
+CTAG

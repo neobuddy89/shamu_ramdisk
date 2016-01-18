@@ -1,0 +1,109 @@
+# cron_log by dorimanx and modified from ExTweaks by UpInTheAir
+# further modified for path by neobuddy89
+
+SYNAPSE_SD_DIR=/sdcard/Synapse;
+SYNAPSE_CRON_DIR=$SYNAPSE_SD_DIR/crontab;
+
+BB=/sbin/busybox;
+
+if [ "$($BB mount | grep rootfs | cut -c 26-27 | grep -c ro)" -eq "1" ]; then
+	$BB mount -o remount,rw /;
+fi;
+
+case $1 in
+master)
+	P=/res/synapse/files/cron_master
+	if [ ! -z $2 ]; then
+			echo $2 > $P
+		if [ $2 == 0 ]; then
+			pkill -f crond;
+			pkill -f "/res/crontab_service/service.sh";
+		elif [ $2 == 1 ]; then
+			if [ "$(pidof crond | wc -l)" -eq "0" ]; then
+				$BB nohup $BB sh /res/crontab_service/service.sh > /dev/null 2>&1;
+			fi;
+		fi;
+	fi
+	VAL=`cat $P`
+	echo $VAL
+	;;
+
+cache)
+	P=/res/synapse/files/cron_cache
+	if [ ! -z $2 ]; then
+		echo $2 > $P
+	fi
+	VAL=`cat $P`
+	echo $VAL
+	;;
+
+sqlite)
+	P=/res/synapse/files/cron_sqlite
+	if [ ! -z $2 ]; then
+		echo $2 > $P
+	fi
+	VAL=`cat $P`
+	echo $VAL
+	;;
+
+drop_cache)
+	P=/res/synapse/files/cron_drop_cache
+	if [ ! -z $2 ]; then
+		echo $2 > $P
+	fi
+	VAL=`cat $P`
+	echo $VAL
+	;;
+
+google)
+	P=/res/synapse/files/cron_google
+	if [ ! -z $2 ]; then
+		echo $2 > $P
+	fi
+	VAL=`cat $P`
+	echo $VAL
+	;;
+
+fstrim)
+	P=/res/synapse/files/cron_fstrim
+	if [ ! -z $2 ]; then
+		echo $2 > $P
+	fi
+	VAL=`cat $P`
+	echo $VAL
+	;;
+
+log)
+	chmod 777 $SYNAPSE_CRON_DIR/*
+	if [ ! -e $SYNAPSE_CRON_DIR/cron-clear-file-cache ]; then
+		echo "no data" > $SYNAPSE_CRON_DIR/cron-clear-file-cache;
+	fi;
+	if [ ! -e $SYNAPSE_CRON_DIR/cron-clear-ram-cache ]; then
+		echo "no data" > $SYNAPSE_CRON_DIR/cron-clear-ram-cache;
+	fi;
+	if [ ! -e $SYNAPSE_CRON_DIR/cron-fstrim ]; then
+		echo "no data" > $SYNAPSE_CRON_DIR/cron-fstrim;
+	fi;
+	if [ ! -e $SYNAPSE_CRON_DIR/cron-ram-release ]; then
+		echo "no data" > $SYNAPSE_CRON_DIR/cron-ram-release;
+	fi;
+	if [ ! -e $SYNAPSE_CRON_DIR/cron-db-optimizing ]; then
+		echo "no data" > $SYNAPSE_CRON_DIR/cron-db-optimizing;
+	fi;
+
+	cat $SYNAPSE_CRON_DIR/cron-clear-file-cache > $SYNAPSE_CRON_DIR/cron_log;
+	echo " --- " >> $SYNAPSE_CRON_DIR/cron_log;
+	cat $SYNAPSE_CRON_DIR/cron-clear-ram-cache >> $SYNAPSE_CRON_DIR/cron_log;
+	echo " --- " >> $SYNAPSE_CRON_DIR/cron_log;
+	cat $SYNAPSE_CRON_DIR/cron-fstrim >> $SYNAPSE_CRON_DIR/cron_log;
+	echo " --- " >> $SYNAPSE_CRON_DIR/cron_log;
+	cat $SYNAPSE_CRON_DIR/cron-ram-release >> $SYNAPSE_CRON_DIR/cron_log;
+	echo " --- " >> $SYNAPSE_CRON_DIR/cron_log;
+	cat $SYNAPSE_CRON_DIR/cron-db-optimizing >> $SYNAPSE_CRON_DIR/cron_log;
+	echo " --- " >> $SYNAPSE_CRON_DIR/cron_log;
+
+	# push all to one log.
+	CRON_LOG=$(cat $SYNAPSE_CRON_DIR/cron_log);
+	echo "$CRON_LOG";
+	;;
+esac
