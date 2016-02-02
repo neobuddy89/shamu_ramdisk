@@ -71,6 +71,32 @@ case $1 in
 	Memory)
 		$BB echo `sh $DEVICE LiveMemory`;
 	;;
+	RAMStats)
+		PROCESS_REC="$(expr `cat /sys/module/process_reclaim/parameters/enable_process_reclaim`)"
+		if [ $PROCESS_REC -eq "1" ]; then
+			pressure_max=`echo "Max Pressure: \`cat /sys/module/process_reclaim/parameters/pressure_max\`"`
+			pressure_min=`echo "Min Pressure: \`cat /sys/module/process_reclaim/parameters/pressure_min\`"`
+			process_reclaim_pressure=`echo "Current Pressure: \`cat /sys/module/process_reclaim/parameters/process_reclaim_pressure\`"`
+			reclaim_avg_efficiency=`echo "Avg Efficiency: \`cat /sys/module/process_reclaim/parameters/reclaim_avg_efficiency\`%"`
+		fi
+
+		ADAPTIVE_LMK="$(expr `cat /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk`)"
+		if [ $ADAPTIVE_LMK -eq "1" ]; then
+			vm_pressure_adaptive_start=`echo "Start Point: \`cat /sys/module/lowmemorykiller/parameters/vm_pressure_adaptive_start\`"`
+			vmpressure_file_min=`echo "Min Free RAM Point: $((\`cat /sys/module/lowmemorykiller/parameters/vmpressure_file_min\`*4/1024)) MB"`
+			lmk_vm_pressure=`echo "Current Pressure: \`cat /sys/module/lowmemorykiller/parameters/lmk_vm_pressure\`"`
+		fi
+
+		if [ $PROCESS_REC -eq "1" ] && [ $ADAPTIVE_LMK -eq "1" ]; then
+			echo Process Reclaim@n$pressure_min@n$pressure_max@n$process_reclaim_pressure@n$reclaim_avg_efficiency@n@nAdaptive LMK@n$vm_pressure_adaptive_start@n$vmpressure_file_min@n$lmk_vm_pressure
+		elif [ $PROCESS_REC -eq "1" ] && [ $ADAPTIVE_LMK -eq "0" ]; then
+			echo Process Reclaim@n$pressure_min@n$pressure_max@n$process_reclaim_pressure@n$reclaim_avg_efficiency@n@nAdaptive LMK is Disabled
+		elif [ $PROCESS_REC -eq "0" ] && [ $ADAPTIVE_LMK -eq "1" ]; then
+			echo Adaptive LMK@n$vm_pressure_adaptive_start@n$vmpressure_file_min@n$lmk_vm_pressure@n@nProcess Reclaim is Disabled
+		else
+			echo Process Reclaim is Disabled@nAdaptive LMK is Disabled
+		fi
+	;;
 	Time)
 		$BB echo `sh $DEVICE LiveTime $2 $3`;
 	;;
