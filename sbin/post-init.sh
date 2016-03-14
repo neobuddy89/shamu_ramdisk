@@ -5,9 +5,9 @@ mount -o remount,rw /;
 mount -o rw,remount /system
 
 # Cleanup conflicts
-if [ -e /system/etc/sysctl.conf ]; then
-	mv /system/etc/sysctl.conf /system/etc/sysctl.conf-bak;
-fi;
+#if [ -e /system/etc/sysctl.conf ]; then
+#	mv /system/etc/sysctl.conf /system/etc/sysctl.conf-bak;
+#fi;
 rm -f /system/etc/init.d/N4UKM;
 rm -f /system/etc/init.d/UKM;
 rm -f /system/etc/init.d/UKM_WAKE;
@@ -35,14 +35,13 @@ echo "Boot initiated on $(date)" > /tmp/bootcheck;
 #echo 32 > /sys/module/lowmemorykiller/parameters/cost
 
 # Adaptive LMK
-echo 1 > /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk
-echo 53059 > /sys/module/lowmemorykiller/parameters/vmpressure_file_min
-echo 1 > /sys/module/process_reclaim/parameters/enable_process_reclaim
+# echo 1 > /sys/module/process_reclaim/parameters/enable_process_reclaim
 echo 100 > /sys/module/process_reclaim/parameters/pressure_max
-echo 200 > /proc/sys/vm/dirty_expire_centisecs
 echo 20 > /proc/sys/vm/dirty_background_ratio
+echo 200 > /proc/sys/vm/dirty_expire_centisecs
 echo 40 > /proc/sys/vm/dirty_ratio
 echo 0 > /proc/sys/vm/swappiness
+echo 80 > /proc/sys/vm/vfs_cache_pressure
 
 # Disable kcal control and calibrate display for shamu
 echo 0 > /sys/devices/platform/kcal_ctrl.0/kcal_enable
@@ -50,13 +49,6 @@ echo "250 250 255" > /sys/devices/platform/kcal_ctrl.0/kcal
 echo 243 > /sys/devices/platform/kcal_ctrl.0/kcal_sat
 echo 1515 > /sys/devices/platform/kcal_ctrl.0/kcal_hue
 echo 250 > /sys/devices/platform/kcal_ctrl.0/kcal_val
-
-# Tweak VM
-echo 20 > /proc/sys/vm/dirty_background_ratio
-echo 200 > /proc/sys/vm/dirty_expire_centisecs
-echo 40 > /proc/sys/vm/dirty_ratio
-echo 0 > /proc/sys/vm/swappiness
-echo 80 > /proc/sys/vm/vfs_cache_pressure
 
 # Install Busybox
 /sbin/busybox --install -s /sbin
@@ -101,18 +93,6 @@ cd /
 
 # Init.d Support
 /sbin/busybox run-parts /system/etc/init.d
-
-# Google Services battery drain fixer by Alcolawl@xda
-pm enable com.google.android.gms/.update.SystemUpdateActivity
-pm enable com.google.android.gms/.update.SystemUpdateService
-pm enable com.google.android.gms/.update.SystemUpdateService$ActiveReceiver
-pm enable com.google.android.gms/.update.SystemUpdateService$Receiver
-pm enable com.google.android.gms/.update.SystemUpdateService$SecretCodeReceiver
-pm enable com.google.android.gsf/.update.SystemUpdateActivity
-pm enable com.google.android.gsf/.update.SystemUpdatePanoActivity
-pm enable com.google.android.gsf/.update.SystemUpdateService
-pm enable com.google.android.gsf/.update.SystemUpdateService$Receiver
-pm enable com.google.android.gsf/.update.SystemUpdateService$SecretCodeReceiver
 
 if [ -e /data/.selinux_enabled ]; then
 	setenforce 1
