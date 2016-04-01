@@ -108,7 +108,7 @@ cat << CTAG
 							SGeneric: { title:"@BASENAME" }
 						}
 					},
-					exclude: [ "weights" ]
+					exclude: [ "weights", "wr_max_time" ]
 				}},
 		]
 }
