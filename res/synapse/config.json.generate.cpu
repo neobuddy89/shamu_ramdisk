@@ -231,6 +231,7 @@ cat << CTAG
 		default:`cat /sys/module/cpu_boost/parameters/sync_threshold`,
 		action:"generic /sys/module/cpu_boost/parameters/sync_threshold",
 		values:{
+			0:"Disabled",
 `
 			while read FREQ TIME; do
 				LABEL=$(expr $FREQ / 1000)
