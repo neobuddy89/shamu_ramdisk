@@ -4,6 +4,8 @@ on charger
     write /sys/module/msm_hotplug/min_cpus_online 1
     write /sys/module/msm_hotplug/max_cpus_online 1
     write /sys/module/lpm_levels/parameters/sleep_disabled 0
+    write /sys/class/devfreq/qcom,cpubw.37/governor "cpubw_hwmon"
+    write /sys/class/devfreq/qcom,cache.36/governor "cache_hwmon"
 
 on early-init
     # Backward compatibility
@@ -53,12 +55,9 @@ on enable-low-power
     write /sys/class/devfreq/qcom,cpubw.37/governor "cpubw_hwmon"
     write /sys/class/devfreq/qcom,cache.36/governor "cache_hwmon"
 
-    write /sys/module/cpu_boost/parameters/boost_ms 20
-    write /sys/module/cpu_boost/parameters/sync_threshold 1728000
     write /sys/module/cpu_boost/parameters/input_boost_freq 1497600
     write /sys/module/cpu_boost/parameters/input_boost_ms 500
-    write /sys/module/cpu_boost/parameters/load_based_syncs 1
-    write /sys/module/cpu_boost/parameters/migration_load_threshold 20
+    write /dev/cpuctl/apps/cpu.notify_on_migrate 0
 
     write /sys/class/kgsl/kgsl-3d0/devfreq/governor "msm-adreno-tz"
 
