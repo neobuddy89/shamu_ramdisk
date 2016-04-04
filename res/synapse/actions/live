@@ -1,6 +1,21 @@
 BB=/sbin/busybox;
 DEVICE=/res/synapse/files/shamu.sh;
 
+
+
+read() {
+	T=/sys/kernel/msm_limiter/$1;
+	VALUE=-1;
+	NOW=`$BB cat $T`;
+	for LIM in $NOW; do
+		VALUE=$(($VALUE+1));
+		if [ "$VALUE" -eq $2 ]; then
+			$BB echo ${LIM:2};
+			return
+		fi;
+	done;
+}
+
 case $1 in
 	CHECKCRON)
 		CRON_SERVICE=$(pidof crond | wc -l);
@@ -9,17 +24,6 @@ case $1 in
 		else
 			echo "Cron Service is Offline";
 		fi;
-	;;
-	SCALINGFREQ)
-		FREQMAX_0="$(expr `cat /sys/kernel/msm_limiter/live_max_freq_0` / 1000)MHz"
-		FREQMIN_0="$(expr `cat /sys/kernel/msm_limiter/live_min_freq_0` / 1000)MHz"
-		FREQMAX_1="$(expr `cat /sys/kernel/msm_limiter/live_max_freq_1` / 1000)MHz"
-		FREQMIN_1="$(expr `cat /sys/kernel/msm_limiter/live_min_freq_1` / 1000)MHz"
-		FREQMAX_2="$(expr `cat /sys/kernel/msm_limiter/live_max_freq_2` / 1000)MHz"
-		FREQMIN_2="$(expr `cat /sys/kernel/msm_limiter/live_min_freq_2` / 1000)MHz"
-		FREQMAX_3="$(expr `cat /sys/kernel/msm_limiter/live_max_freq_3` / 1000)MHz"
-		FREQMIN_3="$(expr `cat /sys/kernel/msm_limiter/live_min_freq_3` / 1000)MHz"
-		echo CPU0 - $FREQMAX_0 : $FREQMIN_0@nCPU1 - $FREQMAX_1 : $FREQMIN_1@nCPU2 - $FREQMAX_2 : $FREQMIN_2@nCPU3 - $FREQMAX_3 : $FREQMIN_3
 	;;
 	KSMStats)
 		KSM="$(expr `cat /sys/kernel/mm/ksm/run`)"
@@ -34,11 +38,17 @@ case $1 in
 	PVSbin)
 		$BB echo `sh $DEVICE DebugPVS`;
 	;;
+	BatteryTemperature)
+		$BB echo `sh $DEVICE LiveBatteryTemperature`;
+	;;
+	Bootloader)
+		$BB echo `sh $DEVICE LiveBootloader`;
+	;;
 	CORESTATUS)
-		CORE_0="$(expr `cat /sys/kernel/msm_limiter/live_cur_freq_0` / 1000)MHz"
-		CORE_1="$(expr `cat /sys/kernel/msm_limiter/live_cur_freq_1` / 1000)MHz"
-		CORE_2="$(expr `cat /sys/kernel/msm_limiter/live_cur_freq_2` / 1000)MHz"
-		CORE_3="$(expr `cat /sys/kernel/msm_limiter/live_cur_freq_3` / 1000)MHz"
+		CORE_0="$(($(read live_cur_freq 0)/1000))MHz"
+		CORE_1="$(($(read live_cur_freq 1)/1000))MHz"
+		CORE_2="$(($(read live_cur_freq 2)/1000))MHz"
+		CORE_3="$(($(read live_cur_freq 3)/1000))MHz"
 		if [ $CORE_1 == "0MHz" ]; then
 			CORE_1=Offline
 		fi
@@ -49,12 +59,6 @@ case $1 in
 			CORE_3=Offline
 		fi
 		echo CPU0: $CORE_0@nCPU1: $CORE_1@nCPU2: $CORE_2@nCPU3: $CORE_3
-	;;
-	BatteryTemperature)
-		$BB echo `sh $DEVICE LiveBatteryTemperature`;
-	;;
-	Bootloader)
-		$BB echo `sh $DEVICE LiveBootloader`;
 	;;
 	CPUBWFrequency)
 		$BB echo `sh $DEVICE LiveCPUBWFrequency`;
@@ -96,6 +100,17 @@ case $1 in
 		else
 			echo Process Reclaim is Disabled@nAdaptive LMK is Disabled
 		fi
+	;;
+	SCALINGFREQ)
+		FREQMAX_0="$(($(read live_max_freq 0)/1000))MHz"
+		FREQMIN_0="$(($(read live_min_freq 0)/1000))MHz"
+		FREQMAX_1="$(($(read live_max_freq 1)/1000))MHz"
+		FREQMIN_1="$(($(read live_min_freq 1)/1000))MHz"
+		FREQMAX_2="$(($(read live_max_freq 2)/1000))MHz"
+		FREQMIN_2="$(($(read live_min_freq 2)/1000))MHz"
+		FREQMAX_3="$(($(read live_max_freq 3)/1000))MHz"
+		FREQMIN_3="$(($(read live_min_freq 3)/1000))MHz"
+		echo CPU0 - $FREQMAX_0 : $FREQMIN_0@nCPU1 - $FREQMAX_1 : $FREQMIN_1@nCPU2 - $FREQMAX_2 : $FREQMIN_2@nCPU3 - $FREQMAX_3 : $FREQMIN_3
 	;;
 	Time)
 		$BB echo `sh $DEVICE LiveTime $2 $3`;
