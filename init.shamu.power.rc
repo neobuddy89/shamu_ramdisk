@@ -47,7 +47,7 @@ on enable-low-power
 
     write /sys/block/mmcblk0/queue/scheduler bfq
 
-    write /sys/module/msm_hotplug/down_lock_duration 500
+    write /sys/module/msm_hotplug/lock_duration 500
     write /sys/module/msm_hotplug/boost_lock_duration 2500
     write /sys/module/msm_hotplug/update_rates "200 5:100 50:50 350:200"
     write /sys/module/msm_hotplug/fast_lane_load 100
