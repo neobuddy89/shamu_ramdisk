@@ -13,8 +13,8 @@ cat << CTAG
 		title:"Hotplug Driver"
         }},
 	{ SOptionList:{
-		default:MSM_Hotplug,
-		description: "MSM Hotplug is default hotplug driver that hotplug cores based on system load. Intelli Hotplug hooks in the task scheduler and hotplug cores accordingly. Bricked hotplug is conservative hotplug driver. Stock will let system ROM to decide hotplug mechanism; it is dependent of mpdecision present within ROM. On 6.0 Shamu ROM, mpdecision turns on all the cores and unplugs cores only when system is suspended.",
+		default:Stock,
+		description: "Stock is default recommended hotplug driver that let kernel and system together decide number of cores to be online based on CPU temperature, Battery level and Device status. It shuts down sibling cores when system is in sleep mode / suspended. MSM Hotplug driver hotplug cores based on system load. Intelli Hotplug hooks in the task scheduler and hotplug cores accordingly. Bricked hotplug is conservative hotplug driver.",
 		action:"hotplug_select /res/synapse/files/hotplug_prof",
 		values:[ MSM_Hotplug, Intelli_Hotplug, Bricked_Hotplug, Stock
 		],
