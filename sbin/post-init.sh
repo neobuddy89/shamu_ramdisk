@@ -34,15 +34,6 @@ echo "Boot initiated on $(date)" > /tmp/bootcheck;
 #echo "1536,2048,4096,16384,28672,32768" > /sys/module/lowmemorykiller/parameters/minfree
 #echo 32 > /sys/module/lowmemorykiller/parameters/cost
 
-# Adaptive LMK
-# echo 1 > /sys/module/process_reclaim/parameters/enable_process_reclaim
-echo 100 > /sys/module/process_reclaim/parameters/pressure_max
-echo 20 > /proc/sys/vm/dirty_background_ratio
-echo 200 > /proc/sys/vm/dirty_expire_centisecs
-echo 40 > /proc/sys/vm/dirty_ratio
-echo 0 > /proc/sys/vm/swappiness
-echo 80 > /proc/sys/vm/vfs_cache_pressure
-
 # Disable kcal control and calibrate display for shamu
 echo 0 > /sys/devices/platform/kcal_ctrl.0/kcal_enable
 echo "250 250 255" > /sys/devices/platform/kcal_ctrl.0/kcal

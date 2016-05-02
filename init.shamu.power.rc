@@ -15,10 +15,6 @@ on early-init
 on enable-low-power
     setenforce 0
 
-    # Adaptive LMK
-    write /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk 1
-    write /sys/module/lowmemorykiller/parameters/vmpressure_file_min 53059
-
     write /sys/module/msm_thermal/core_control/enabled 0
 
     write /sys/kernel/msm_limiter/scaling_governor interactive
@@ -43,6 +39,7 @@ on enable-low-power
     write /sys/devices/system/cpu/cpufreq/impulse/target_loads "85 1500000:90 1800000:70"
     write /sys/devices/system/cpu/cpufreq/impulse/timer_rate 30000
     write /sys/devices/system/cpu/cpufreq/impulse/timer_slack 30000
+
     write /sys/module/msm_thermal/core_control/enabled 1
 
     write /sys/block/mmcblk0/queue/scheduler bfq
@@ -64,6 +61,25 @@ on enable-low-power
     write /sys/module/lpm_levels/parameters/sleep_disabled 0
     write /sys/module/state_notifier/parameters/enabled 1
     write /sys/kernel/state_helper/enabled 1
+
+    # Adaptive LMK
+    write /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk 1
+    write /sys/module/lowmemorykiller/parameters/vmpressure_file_min 53059
+
+    # Per-process reclaim
+    write /sys/module/process_reclaim/parameters/enable_process_reclaim 1
+    write /sys/module/process_reclaim/parameters/pressure_min 10
+    write /sys/module/process_reclaim/parameters/per_swap_size 1024
+    write /sys/module/process_reclaim/parameters/pressure_max 70
+    write /sys/module/process_reclaim/parameters/swap_opt_eff 30
+
+    # VM tuning
+    write /proc/sys/vm/dirty_background_ratio 20
+    write /proc/sys/vm/dirty_expire_centisecs 200
+    write /proc/sys/vm/dirty_ratio 40
+    write /proc/sys/vm/page-cluster 0
+    write /proc/sys/vm/swappiness 0
+    write /proc/sys/vm/vfs_cache_pressure 80
 
     start postinit
 
