@@ -3,6 +3,7 @@
 #
 ro.adb.secure=1
 ro.secure=1
+security.perf_harden=1
 ro.allow.mock.location=0
 ro.debuggable=1
 ro.zygote=zygote32
@@ -19,7 +20,7 @@ ro.qualcomm.perf.cores_online=2
 #
 # BOOTIMAGE_BUILD_PROPERTIES
 #
-ro.bootimage.build.date=Fri Jul 29 20:42:19 IST 2016
-ro.bootimage.build.date.utc=1469805139
-ro.bootimage.build.fingerprint=google/cm_shamu/shamu:6.0.1/MOB30R/441d994cd9:userdebug/test-keys
+ro.bootimage.build.date=Sat Aug 13 16:58:35 IST 2016
+ro.bootimage.build.date.utc=1471087715
+ro.bootimage.build.fingerprint=google/cm_shamu/shamu:6.0.1/MOB30Z/e7794186ca:userdebug/test-keys
 persist.sys.usb.config=none
