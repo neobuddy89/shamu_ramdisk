@@ -32,7 +32,7 @@ ro.qualcomm.perf.cores_online=2
 #
 # BOOTIMAGE_BUILD_PROPERTIES
 #
-ro.bootimage.build.date=Tue Oct 18 23:55:34 IST 2016
-ro.bootimage.build.date.utc=1476815134
-ro.bootimage.build.fingerprint=google/cm_shamu/shamu:7.0/NBD90Z/71746edae8:userdebug/test-keys
+ro.bootimage.build.date=Mon Oct 24 21:31:09 IST 2016
+ro.bootimage.build.date.utc=1477324869
+ro.bootimage.build.fingerprint=google/cm_shamu/shamu:7.0/NBD90Z/46c1dac581:userdebug/test-keys
 persist.sys.usb.config=adb
