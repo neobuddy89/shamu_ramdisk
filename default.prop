@@ -2,6 +2,7 @@
 # ADDITIONAL_DEFAULT_PROPERTIES
 #
 ro.oem_unlock_supported=1
+ro.adb.secure=1
 ro.secure=1
 security.perf_harden=1
 ro.allow.mock.location=0
@@ -32,7 +33,7 @@ ro.qualcomm.perf.cores_online=2
 #
 # BOOTIMAGE_BUILD_PROPERTIES
 #
-ro.bootimage.build.date=Mon Oct 24 21:31:09 IST 2016
-ro.bootimage.build.date.utc=1477324869
-ro.bootimage.build.fingerprint=google/cm_shamu/shamu:7.0/NBD90Z/46c1dac581:userdebug/test-keys
-persist.sys.usb.config=adb
+ro.bootimage.build.date=Thu Oct 27 09:48:40 IST 2016
+ro.bootimage.build.date.utc=1477541920
+ro.bootimage.build.fingerprint=google/cm_shamu/shamu:7.1/NDE63P/5921fe0193:userdebug/test-keys
+persist.sys.usb.config=none
