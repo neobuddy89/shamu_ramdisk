@@ -3,6 +3,7 @@
 #
 ro.oem_unlock_supported=1
 ro.adb.secure=1
+ro.device.cache_dir=/cache
 ro.secure=1
 security.perf_harden=1
 ro.allow.mock.location=0
@@ -33,7 +34,7 @@ ro.qualcomm.perf.cores_online=2
 #
 # BOOTIMAGE_BUILD_PROPERTIES
 #
-ro.bootimage.build.date=Sun Nov 20 18:43:03 IST 2016
-ro.bootimage.build.date.utc=1479647583
-ro.bootimage.build.fingerprint=google/cm_shamu/shamu:7.1/NDE63X/1cecfba575:userdebug/test-keys
+ro.bootimage.build.date=Tue Dec 6 18:02:16 IST 2016
+ro.bootimage.build.date.utc=1481027536
+ro.bootimage.build.fingerprint=google/cm_shamu/shamu:7.1/NDE63X/05255945f7:userdebug/test-keys
 persist.sys.usb.config=none
