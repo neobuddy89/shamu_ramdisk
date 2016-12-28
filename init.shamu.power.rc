@@ -89,3 +89,7 @@ on property:dev.bootcomplete=1
     write /sys/kernel/state_helper/enabled 1
     write /sys/kernel/state_helper/batt_level_cri 1
     write /sys/kernel/state_helper/batt_level_eco 15
+
+    # i/o scheduler
+    setprop sys.io.scheduler "bfq"
+    write /sys/block/mmcblk0/queue/scheduler bfq
