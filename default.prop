@@ -34,7 +34,7 @@ ro.qualcomm.perf.cores_online=2
 #
 # BOOTIMAGE_BUILD_PROPERTIES
 #
-ro.bootimage.build.date=Wed Dec 28 21:17:49 IST 2016
-ro.bootimage.build.date.utc=1482940069
-ro.bootimage.build.fingerprint=google/cm_shamu/shamu:7.1.1/NMF26Q/119487742f:userdebug/test-keys
+ro.bootimage.build.date=Thu Jan 12 06:33:52 IST 2017
+ro.bootimage.build.date.utc=1484183032
+ro.bootimage.build.fingerprint=google/lineage_shamu/shamu:7.1.1/NMF26V/f1735a22bd:userdebug/test-keys
 persist.sys.usb.config=none

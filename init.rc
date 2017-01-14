@@ -15,7 +15,6 @@ import /init.cm.rc
 
 
 on early-init
-    #loglevel 6
     # Set init and its forked children's oom_adj.
     write /proc/1/oom_score_adj -1000
 
@@ -61,10 +60,14 @@ on init
     chown system system /dev/stune/foreground
     chown system system /dev/stune/background
     chown system system /dev/stune/top-app
-    chmod_chown /dev/stune/tasks 0664 system system
-    chmod_chown /dev/stune/foreground/tasks 0664 system system
-    chmod_chown /dev/stune/background/tasks 0664 system system
-    chmod_chown /dev/stune/top-app/tasks 0664 system system
+    chown system system /dev/stune/tasks
+    chown system system /dev/stune/foreground/tasks
+    chown system system /dev/stune/background/tasks
+    chown system system /dev/stune/top-app/tasks
+    chmod 0664 /dev/stune/tasks
+    chmod 0664 /dev/stune/foreground/tasks
+    chmod 0664 /dev/stune/background/tasks
+    chmod 0664 /dev/stune/top-app/tasks
 
     # Mount staging areas for devices managed by vold
     # See storage config details at http://source.android.com/tech/storage/
@@ -72,13 +75,27 @@ on init
     restorecon_recursive /mnt
 
     mount configfs none /config
-    chmod_chown /config/sdcardfs 0775 system package_info
+    chmod 0775 /config/sdcardfs
+    chown system package_info /config/sdcardfs
 
-    mkdir_parallel /mnt/secure,0700,root,root /mnt/asec,0755,root,system /mnt/obb,0755,root,system /mnt/media_rw,0750,root,media_rw /mnt/user,0755,root,root /mnt/expand,0771,system,system /mnt/appfuse,0711,root,root /mnt/runtime,0700,root,root
+    mkdir /mnt/secure 0700 root root
+    mkdir /mnt/secure/asec 0700 root root
+    mkdir /mnt/asec 0755 root system
+    mkdir /mnt/obb 0755 root system
+    mkdir /mnt/media_rw 0750 root media_rw
+    mkdir /mnt/user 0755 root root
+    mkdir /mnt/user/0 0755 root root
+    mkdir /mnt/expand 0771 system system
+    mkdir /mnt/appfuse 0711 root root
 
-    mkdir_parallel /mnt/user/0,0755,root,root /mnt/secure/asec,0700,root,root /mnt/runtime/default,0755,root,root /mnt/runtime/read,0755,root,root /mnt/runtime/write,0755,root,root
-
-    mkdir_parallel /mnt/runtime/read/self,0755,root,root /mnt/runtime/default/self,0755,root,root /mnt/runtime/write/self,0755,root,root
+    # Storage views to support runtime permissions
+    mkdir /mnt/runtime 0700 root root
+    mkdir /mnt/runtime/default 0755 root root
+    mkdir /mnt/runtime/default/self 0755 root root
+    mkdir /mnt/runtime/read 0755 root root
+    mkdir /mnt/runtime/read/self 0755 root root
+    mkdir /mnt/runtime/write 0755 root root
+    mkdir /mnt/runtime/write/self 0755 root root
 
     # Symlink to keep legacy apps working in multi-user world
     symlink /storage/self/primary /sdcard
@@ -127,12 +144,14 @@ on init
     mkdir /dev/cpuctl
     mount cgroup none /dev/cpuctl cpu
     chown system system /dev/cpuctl
-    chmod_chown /dev/cpuctl/tasks 0666 ystem system
+    chown system system /dev/cpuctl/tasks
+    chmod 0666 /dev/cpuctl/tasks
     write /dev/cpuctl/cpu.rt_period_us 1000000
     write /dev/cpuctl/cpu.rt_runtime_us 950000
 
     mkdir /dev/cpuctl/bg_non_interactive
-    chmod_chown /dev/cpuctl/bg_non_interactive/tasks 0666 system system
+    chown system system /dev/cpuctl/bg_non_interactive/tasks
+    chmod 0666 /dev/cpuctl/bg_non_interactive/tasks
     # 5.0 %
     write /dev/cpuctl/bg_non_interactive/cpu.shares 52
     write /dev/cpuctl/bg_non_interactive/cpu.rt_period_us 1000000
@@ -146,19 +165,24 @@ on init
     # this ensures that the cpusets are present and usable, but the device's
     # init.rc must actually set the correct cpus
     mkdir /dev/cpuset/foreground
+    write /dev/cpuset/foreground/cpus 0
     write /dev/cpuset/foreground/mems 0
     mkdir /dev/cpuset/foreground/boost
+    write /dev/cpuset/foreground/boost/cpus 0
     write /dev/cpuset/foreground/boost/mems 0
     mkdir /dev/cpuset/background
+    write /dev/cpuset/background/cpus 0
     write /dev/cpuset/background/mems 0
 
     # system-background is for system tasks that should only run on
     # little cores, not on bigs
     # to be used only by init, so don't change system-bg permissions
     mkdir /dev/cpuset/system-background
+    write /dev/cpuset/system-background/cpus 0
     write /dev/cpuset/system-background/mems 0
 
     mkdir /dev/cpuset/top-app
+    write /dev/cpuset/top-app/cpus 0
     write /dev/cpuset/top-app/mems 0
 
     # change permissions for all cpusets we'll touch at runtime
@@ -166,16 +190,24 @@ on init
     chown system system /dev/cpuset/foreground
     chown system system /dev/cpuset/foreground/boost
     chown system system /dev/cpuset/background
+    chown system system /dev/cpuset/system-background
     chown system system /dev/cpuset/top-app
+    chown system system /dev/cpuset/tasks
+    chown system system /dev/cpuset/foreground/tasks
+    chown system system /dev/cpuset/foreground/boost/tasks
+    chown system system /dev/cpuset/background/tasks
+    chown system system /dev/cpuset/system-background/tasks
+    chown system system /dev/cpuset/top-app/tasks
 
     # set system-background to 0775 so SurfaceFlinger can touch it
-    chmod_chown /dev/cpuset/system-background 0775 system system
-    chmod_chown /dev/cpuset/foreground/tasks 0664 system system
-    chmod_chown /dev/cpuset/foreground/boost/tasks 0664 system system
-    chmod_chown /dev/cpuset/background/tasks 0664 system system
-    chmod_chown /dev/cpuset/system-background/tasks 0664 system system
-    chmod_chown /dev/cpuset/top-app/tasks 0664 system system
-    chmod_chown /dev/cpuset/tasks 0664 system system
+    chmod 0775 /dev/cpuset/system-background
+
+    chmod 0664 /dev/cpuset/foreground/tasks
+    chmod 0664 /dev/cpuset/foreground/boost/tasks
+    chmod 0664 /dev/cpuset/background/tasks
+    chmod 0664 /dev/cpuset/system-background/tasks
+    chmod 0664 /dev/cpuset/top-app/tasks
+    chmod 0664 /dev/cpuset/tasks
 
 
     # qtaguid will limit access to specific data based on group memberships.
@@ -194,8 +226,10 @@ on init
 
     # pstore/ramoops previous console log
     mount pstore pstore /sys/fs/pstore
-    chmod_chown /sys/fs/pstore/console-ramoops 0440 system log
-    chmod_chown /sys/fs/pstore/pmsg-ramoops-0 0440 system log
+    chown system log /sys/fs/pstore/console-ramoops
+    chmod 0440 /sys/fs/pstore/console-ramoops
+    chown system log /sys/fs/pstore/pmsg-ramoops-0
+    chmod 0440 /sys/fs/pstore/pmsg-ramoops-0
 
     # enable armv8_deprecated instruction hooks
     write /proc/sys/abi/swp 1
@@ -278,27 +312,44 @@ on post-fs
     restorecon_recursive /sys/kernel/debug
 
     # We chown/chmod /cache again so because mount is run as root + defaults
-    chmod_chown /cache 0770 system cache
+    chown system cache /cache
+    chmod 0770 /cache
     # We restorecon /cache in case the cache partition has been reset.
     restorecon_recursive /cache
 
+    # Create /cache/recovery in case it's not there. It'll also fix the odd
+    # permissions if created by the recovery system.
+    mkdir /cache/recovery 0770 system cache
+
+    # Backup/restore mechanism uses the cache partition
+    mkdir /cache/backup_stage 0700 system system
+    mkdir /cache/backup 0700 system system
+
     #change permissions on vmallocinfo so we can grab it from bugreports
-    chmod_chown /proc/vmallocinfo 0440 root log
-    chmod_chown /proc/slabinfo  0440 root log
+    chown root log /proc/vmallocinfo
+    chmod 0440 /proc/vmallocinfo
+
+    chown root log /proc/slabinfo
+    chmod 0440 /proc/slabinfo
 
     #change permissions on kmsg & sysrq-trigger so bugreports can grab kthread stacks
-    chmod_chown /proc/kmsg 0440 root system
-    chmod_chown /proc/sysrq-trigger 0220 root system
-    chmod_chown /proc/last_kmsg 0440 system log
+    chown root system /proc/kmsg
+    chmod 0440 /proc/kmsg
+    chown root system /proc/sysrq-trigger
+    chmod 0220 /proc/sysrq-trigger
+    chown system log /proc/last_kmsg
+    chmod 0440 /proc/last_kmsg
 
     # make the selinux kernel policy world-readable
     chmod 0444 /sys/fs/selinux/policy
 
-    mkdir_parallel /cache/recovery,0770,system,cache /cache/backup_stage,0700,system,system /cache/backup,0700,system,system /cache/lost+found,0770,root,root
+    # create the lost+found directories, so as to enforce our permissions
+    mkdir /cache/lost+found 0770 root root
 
 on post-fs-data
     # We chown/chmod /data again so because mount is run as root + defaults
-    chmod_chown /data 0771 system system
+    chown system system /data
+    chmod 0771 /data
     # We restorecon /data in case the userdata partition has been reset.
     restorecon /data
 
@@ -313,30 +364,125 @@ on post-fs-data
     # Start bootcharting as soon as possible after the data partition is
     # mounted to collect more data.
     mkdir /data/bootchart 0755 shell shell
-    bootchart start
+    bootchart_init
 
     # Avoid predictable entropy pool. Carry over entropy from previous boot.
     copy /data/system/entropy.dat /dev/urandom
 
-    mkdir_parallel /data/misc,01771,system,misc /data/local,0751,root,root /data/data,0771,system,system /data/app-private,0771,system,system /data/app-ephemeral,0771,system,system /data/app-asec,0700,root,root /data/app-lib,0771,system,system /data/app,0771,system,system /data/property,0700,root,root /data/tombstones,0771,system,system /data/dalvik-cache,0771,root,root /data/ota,0771,root,root /data/ota_package,0770,system,cache /data/resource-cache,0771,system,system /data/lost+found,0770,root,root /data/drm,0770,drm,drm /data/mediadrm,0770,mediadrm,mediadrm /data/anr,0775,system,system /data/security,0711,system,system /data/backup,0700,system,system /data/ss,0700,system,system /data/system,0775,system,system /data/system_de,0770,system,system /data/system_ce,0770,system,system /data/misc_de,01771,system,misc /data/misc_ce,01771,system,misc /data/user,0711,system,system /data/user_de,0711,system,system /data/media,0770,media_rw,media_rw /data/cache,0770,system,cache
+    # create basic filesystem structure
+    mkdir /data/misc 01771 system misc
+    mkdir /data/misc/bluedroid 02770 bluetooth net_bt_stack
+    # Fix the access permissions and group ownership for 'bt_config.conf'
+    chmod 0660 /data/misc/bluedroid/bt_config.conf
+    chown bluetooth net_bt_stack /data/misc/bluedroid/bt_config.conf
+    mkdir /data/misc/bluetooth 0770 system system
+    mkdir /data/misc/keystore 0700 keystore keystore
+    mkdir /data/misc/gatekeeper 0700 system system
+    mkdir /data/misc/keychain 0771 system system
+    mkdir /data/misc/net 0750 root shell
+    mkdir /data/misc/radio 0770 system radio
+    mkdir /data/misc/sms 0770 system radio
+    mkdir /data/misc/zoneinfo 0775 system system
+    mkdir /data/misc/vpn 0770 system vpn
+    mkdir /data/misc/shared_relro 0771 shared_relro shared_relro
+    mkdir /data/misc/systemkeys 0700 system system
+    mkdir /data/misc/wifi 0770 wifi wifi
+    mkdir /data/misc/wifi/sockets 0770 wifi wifi
+    mkdir /data/misc/wifi/wpa_supplicant 0770 wifi wifi
+    mkdir /data/misc/ethernet 0770 system system
+    mkdir /data/misc/dhcp 0770 dhcp dhcp
+    mkdir /data/misc/user 0771 root root
+    mkdir /data/misc/perfprofd 0775 root root
+    # give system access to wpa_supplicant.conf for backup and restore
+    chmod 0660 /data/misc/wifi/wpa_supplicant.conf
+    mkdir /data/local 0751 root root
+    mkdir /data/misc/media 0700 media media
+    mkdir /data/misc/audioserver 0700 audioserver audioserver
+    mkdir /data/misc/cameraserver 0700 cameraserver cameraserver
+    mkdir /data/misc/vold 0700 root root
+    mkdir /data/misc/boottrace 0771 system shell
+    mkdir /data/misc/update_engine 0700 root root
+    mkdir /data/misc/trace 0700 root root
+    # profile file layout
+    mkdir /data/misc/profiles 0771 system system
+    mkdir /data/misc/profiles/cur 0771 system system
+    mkdir /data/misc/profiles/ref 0771 system system
+    mkdir /data/misc/profman 0770 system shell
 
-    mkdir_parallel /data/misc/bluedroid,02770,bluetooth,net_bt_stack /data/misc/bluetooth,0770,system,system /data/misc/keystore,0700,keystore,keystore /data/misc/gatekeeper,0700,system,system /data/misc/keychain,0771,system,system /data/misc/net,0750,root,shell /data/misc/radio,0770,system,radio /data/misc/sms,0770,system,radio /data/misc/zoneinfo,0775,system,system /data/misc/vpn,0770,system,vpn /data/misc/shared_relro,0771,shared_relro,shared_relro /data/misc/systemkeys,0700,system,system /data/misc/wifi,0770,wifi,wifi /data/misc/wifi/sockets,0770,wifi,wifi /data/misc/wifi/wpa_supplicant,0770,wifi,wifi /data/misc/ethernet,0770,system,system /data/misc/dhcp,0770,dhcp,dhcp /data/misc/user,0771,root,root /data/misc/perfprofd,0775,root,root /data/misc/media,0700,media,media /data/misc/audioserver,0700,audioserver,audioserver /data/misc/cameraserver,0700,cameraserver,cameraserver /data/misc/vold,0700,root,root /data/misc/boottrace,0771,system,shell /data/misc/update_engine,0700,root,root /data/misc/trace,0700,root,root /data/misc/profiles,0771,system,system /data/misc/profman,0770,system,shell /data/local/tmp,0771,shell,shell /data/system/heapdump,0700,system,system /data/system/users,0775,system,system /data/media/obb,0770,media_rw,media_rw /data/cache/recovery,0770,system,cache /data/cache/backup_stage,0700,system,system /data/cache/backup,0700,system,system
+    # For security reasons, /data/local/tmp should always be empty.
+    # Do not place files or directories in /data/local/tmp
+    mkdir /data/local/tmp 0771 shell shell
+    mkdir /data/data 0771 system system
+    mkdir /data/app-private 0771 system system
+    mkdir /data/app-ephemeral 0771 system system
+    mkdir /data/app-asec 0700 root root
+    mkdir /data/app-lib 0771 system system
+    mkdir /data/app 0771 system system
+    mkdir /data/property 0700 root root
+    mkdir /data/tombstones 0771 system system
 
-    mkdir_parallel /data/misc/profiles/cur,0771,system,system /data/misc/profiles/ref,0771,system,system
+    # create dalvik-cache, so as to enforce our permissions
+    mkdir /data/dalvik-cache 0771 root root
+    # create the A/B OTA directory, so as to enforce our permissions
+    mkdir /data/ota 0771 root root
+
+    # create the OTA package directory. It will be accessed by GmsCore (cache
+    # group), update_engine and update_verifier.
+    mkdir /data/ota_package 0770 system cache
+
+    # create resource-cache and double-check the perms
+    mkdir /data/resource-cache 0771 system system
+    chown system system /data/resource-cache
+    chmod 0771 /data/resource-cache
+
+    # create the lost+found directories, so as to enforce our permissions
+    mkdir /data/lost+found 0770 root root
+
+    # create directory for DRM plug-ins - give drm the read/write access to
+    # the following directory.
+    mkdir /data/drm 0770 drm drm
+
+    # create directory for MediaDrm plug-ins - give drm the read/write access to
+    # the following directory.
+    mkdir /data/mediadrm 0770 mediadrm mediadrm
+
+    mkdir /data/anr 0775 system system
 
     # symlink to bugreport storage location
     rm /data/bugreports
     symlink /data/user_de/0/com.android.shell/files/bugreports /data/bugreports
 
-    chmod_chown /data/resource-cache 0771 system system
+    # Separate location for storing security policy files on data
+    mkdir /data/security 0711 system system
 
+    # Create all remaining /data root dirs so that they are made through init
+    # and get proper encryption policy installed
+    mkdir /data/backup 0700 system system
+    mkdir /data/ss 0700 system system
+
+    mkdir /data/system 0775 system system
+    mkdir /data/system/heapdump 0700 system system
+    mkdir /data/system/users 0775 system system
+
+    mkdir /data/system_de 0770 system system
+    mkdir /data/system_ce 0770 system system
+
+    mkdir /data/misc_de 01771 system misc
+    mkdir /data/misc_ce 01771 system misc
+
+    mkdir /data/user 0711 system system
+    mkdir /data/user_de 0711 system system
     symlink /data/data /data/user/0
+
+    mkdir /data/media 0770 media_rw media_rw
+    mkdir /data/media/obb 0770 media_rw media_rw
+
+    mkdir /data/cache 0770 system cache
+    mkdir /data/cache/recovery 0770 system cache
+    mkdir /data/cache/backup_stage 0700 system system
+    mkdir /data/cache/backup 0700 system system
+
     init_user0
-
-    start zygote
-    start zygote_secondary
-
-    start servicemanager
 
     # Reload policy from /data/security if present.
     setprop selinux.reload_policy 1
@@ -367,8 +513,10 @@ on boot
     # parameters to match how it is managing things.
     write /proc/sys/vm/overcommit_memory 1
     write /proc/sys/vm/min_free_order_shift 4
-    chmod_chown /sys/module/lowmemorykiller/parameters/adj 0664 root system
-    chmod_chown /sys/module/lowmemorykiller/parameters/minfree 0664 root system
+    chown root system /sys/module/lowmemorykiller/parameters/adj
+    chmod 0664 /sys/module/lowmemorykiller/parameters/adj
+    chown root system /sys/module/lowmemorykiller/parameters/minfree
+    chmod 0664 /sys/module/lowmemorykiller/parameters/minfree
 
     # Tweak background writeout
     write /proc/sys/vm/dirty_expire_centisecs 200
@@ -381,37 +529,63 @@ on boot
     chown radio system /sys/android_power/acquire_partial_wake_lock
     chown radio system /sys/android_power/release_wake_lock
     chown system system /sys/power/autosleep
+    chown system system /sys/power/state
     chown system system /sys/power/wakeup_count
-    chmod_chown /sys/power/state 0660 system system
-    chmod_chown /sys/power/wake_lock 0660 radio wakelock
-    chmod_chown /sys/power/wake_unlock 0660 radio wakelock
+    chown radio wakelock /sys/power/wake_lock
+    chown radio wakelock /sys/power/wake_unlock
+    chmod 0660 /sys/power/state
+    chmod 0660 /sys/power/wake_lock
+    chmod 0660 /sys/power/wake_unlock
 
-    chmod_chown /sys/devices/system/cpu/cpufreq/interactive/timer_rate 0664 system system
-    chmod_chown /sys/devices/system/cpu/cpufreq/interactive/timer_slack 0664 system system
-    chmod_chown /sys/devices/system/cpu/cpufreq/interactive/min_sample_time 0664 system system
-    chmod_chown /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq 0664 system system
-    chmod_chown /sys/devices/system/cpu/cpufreq/interactive/target_loads 0664 system system
-    chmod_chown /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load 0664 system system
-    chmod_chown /sys/devices/system/cpu/cpufreq/interactive/above_hispeed_delay 0664 system system
-    chmod_chown /sys/devices/system/cpu/cpufreq/interactive/boost 0664 system system
-    chmod_chown /sys/devices/system/cpu/cpufreq/interactive/boostpulse 0664 system system
-    chmod_chown /sys/devices/system/cpu/cpufreq/interactive/input_boost 0664 system system
-    chmod_chown /sys/devices/system/cpu/cpufreq/interactive/boostpulse_duration 0664 system system
-    chmod_chown /sys/devices/system/cpu/cpufreq/interactive/io_is_busy 0664 system system
-    chmod_chown /sys/devices/system/cpu/cpufreq/ondemand/boostfreq 0664 system system
-    chmod_chown /sys/devices/system/cpu/cpufreq/ondemand/boostpulse 0664 system system
-    chmod_chown /sys/devices/system/cpu/cpufreq/ondemand/boosttime 0664 system system
-    chmod_chown /sys/devices/system/cpu/cpufreq/ondemand/io_is_busy 0664 system system
-    chmod_chown /sys/devices/system/cpu/cpufreq/ondemand/down_differential 0664 system system
-    chmod_chown /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate 0664 system system
-    chmod_chown /sys/devices/system/cpu/cpufreq/ondemand/powersave_bias 0664 system system
-    chmod_chown /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor 0664 system system
-    chmod_chown /sys/devices/system/cpu/cpufreq/ondemand/up_threshold 0664 system system
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/timer_rate
+    chmod 0664 /sys/devices/system/cpu/cpufreq/interactive/timer_rate
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/timer_slack
+    chmod 0664 /sys/devices/system/cpu/cpufreq/interactive/timer_slack
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/min_sample_time
+    chmod 0664 /sys/devices/system/cpu/cpufreq/interactive/min_sample_time
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq
+    chmod 0664 /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/target_loads
+    chmod 0664 /sys/devices/system/cpu/cpufreq/interactive/target_loads
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load
+    chmod 0664 /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/above_hispeed_delay
+    chmod 0664 /sys/devices/system/cpu/cpufreq/interactive/above_hispeed_delay
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/boost
+    chmod 0664 /sys/devices/system/cpu/cpufreq/interactive/boost
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/boostpulse
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/input_boost
+    chmod 0664 /sys/devices/system/cpu/cpufreq/interactive/input_boost
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/boostpulse_duration
+    chmod 0664 /sys/devices/system/cpu/cpufreq/interactive/boostpulse_duration
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/io_is_busy
+    chmod 0664 /sys/devices/system/cpu/cpufreq/interactive/io_is_busy
+    chown system system /sys/devices/system/cpu/cpufreq/ondemand/boostfreq
+    chmod 0664 /sys/devices/system/cpu/cpufreq/ondemand/boostfreq
+    chown system system /sys/devices/system/cpu/cpufreq/ondemand/boostpulse
+    chmod 0664 /sys/devices/system/cpu/cpufreq/ondemand/boostpulse
+    chown system system /sys/devices/system/cpu/cpufreq/ondemand/boosttime
+    chmod 0664 /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate
+    chown system system /sys/devices/system/cpu/cpufreq/ondemand/io_is_busy
+    chmod 0664 /sys/devices/system/cpu/cpufreq/ondemand/io_is_busy
+    chown system system /sys/devices/system/cpu/cpufreq/ondemand/down_differential
+    chmod 0664 /sys/devices/system/cpu/cpufreq/ondemand/down_differential
+    chown system system /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate
+    chmod 0664 /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate
+    chown system system /sys/devices/system/cpu/cpufreq/ondemand/powersave_bias
+    chmod 0664 /sys/devices/system/cpu/cpufreq/ondemand/powersave_bias
+    chown system system /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor
+    chmod 0664 /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor
+    chown system system /sys/devices/system/cpu/cpufreq/ondemand/up_threshold
+    chmod 0664 /sys/devices/system/cpu/cpufreq/ondemand/up_threshold
 
     # Assume SMP uses shared cpufreq policy for all CPUs
-    chmod_chown /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor 0664 system system
-    chmod_chown /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq 0664 system system
-    chmod_chown /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 0664 system system
+    chown system system /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+    chmod 0664 /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+    chown system system /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+    chmod 0664 /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+    chown system system /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+    chmod 0664 /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
 
     chown system system /sys/class/timed_output/vibrator/enable
     chown system system /sys/class/leds/keyboard-backlight/brightness
@@ -482,9 +656,6 @@ on property:vold.decrypt=trigger_shutdown_framework
 
 on property:sys.powerctl=*
     powerctl ${sys.powerctl}
-
-on property:sys.boot_completed=1
-    bootchart stop
 
 # system server cannot write to /proc/sys files,
 # and chown/chmod does not work for /proc/sys/ entries.
