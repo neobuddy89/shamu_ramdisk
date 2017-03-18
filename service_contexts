@@ -58,6 +58,7 @@ iphonesubinfo2                            u:object_r:radio_service:s0
 iphonesubinfo                             u:object_r:radio_service:s0
 ims                                       u:object_r:radio_service:s0
 imms                                      u:object_r:imms_service:s0
+interfacer                                u:object_r:interfacer_service:s0
 isms_msim                                 u:object_r:radio_service:s0
 isms2                                     u:object_r:radio_service:s0
 isms                                      u:object_r:radio_service:s0
@@ -158,7 +159,6 @@ cneservice                                u:object_r:cne_service:s0
 
 #line 1 "vendor/cm/sepolicy/service_contexts"
 edgegestureservice                        u:object_r:edge_gesture_service:s0
-themes                                    u:object_r:themes_service:s0
 torch                                     u:object_r:torch_service:s0
 killswitch                                u:object_r:kill_switch_service:s0
 cmstatusbar                               u:object_r:cm_status_bar_service:s0
@@ -168,7 +168,6 @@ cmtelephonymanager                        u:object_r:cm_telephony_service:s0
 cmhardware                                u:object_r:cm_hardware_service:s0
 cmappsuggest                              u:object_r:cm_app_suggest_service:s0
 cmperformance                             u:object_r:cm_performance_service:s0
-cmthemes                                  u:object_r:cm_themes_service:s0
 cmiconcache                               u:object_r:cm_iconcache_service:s0
 cmlivelockscreen                          u:object_r:cm_livelockscreen_service:s0
 cmweather                                 u:object_r:cm_weather_service:s0

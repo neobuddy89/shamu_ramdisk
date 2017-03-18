@@ -148,6 +148,7 @@ on init
     mkdir /dev/cpuctl
     mount cgroup none /dev/cpuctl cpu
     chown system system /dev/cpuctl
+    chmod 0660 /dev/cpuctl
     chown system system /dev/cpuctl/tasks
     chmod 0666 /dev/cpuctl/tasks
     write /dev/cpuctl/cpu.rt_period_us 1000000
@@ -462,6 +463,7 @@ on post-fs-data
 
     mkdir /data/system 0775 system system
     mkdir /data/system/heapdump 0700 system system
+    mkdir /data/system/theme 0775 system system
     mkdir /data/system/users 0775 system system
 
     mkdir /data/system_de 0770 system system
@@ -706,6 +708,6 @@ service flash_recovery /system/bin/install-recovery.sh
     disabled
 
 # update recovery if enabled
-on property:persist.sys.recovery_update=true
-    start flash_recovery
+#on property:persist.sys.recovery_update=true
+#    start flash_recovery
 
