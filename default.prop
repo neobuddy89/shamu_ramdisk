@@ -34,6 +34,6 @@ ro.qualcomm.perf.cores_online=2
 #
 # BOOTIMAGE_BUILD_PROPERTIES
 #
-ro.bootimage.build.date=Tue Jun 6 07:46:06 IST 2017
-ro.bootimage.build.date.utc=1496715366
+ro.bootimage.build.date=Fri Jun 9 20:16:52 IST 2017
+ro.bootimage.build.date.utc=1497019612
 persist.sys.usb.config=none
