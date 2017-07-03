@@ -31,9 +31,10 @@ camera.disable_zsl_mode=0
 persist.camera.HAL3.enabled=1
 persist.camera.ois.disable=0
 ro.qualcomm.perf.cores_online=2
+ro.sys.sdcardfs=true
 #
 # BOOTIMAGE_BUILD_PROPERTIES
 #
-ro.bootimage.build.date=Tue Jun 20 19:59:03 IST 2017
-ro.bootimage.build.date.utc=1497968943
+ro.bootimage.build.date=Mon Jul 3 22:36:42 IST 2017
+ro.bootimage.build.date.utc=1499101602
 persist.sys.usb.config=none
