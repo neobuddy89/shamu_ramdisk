@@ -35,6 +35,6 @@ ro.sys.sdcardfs=true
 #
 # BOOTIMAGE_BUILD_PROPERTIES
 #
-ro.bootimage.build.date=Mon Jul 3 22:36:42 IST 2017
-ro.bootimage.build.date.utc=1499101602
+ro.bootimage.build.date=Fri Jul 7 22:23:39 IST 2017
+ro.bootimage.build.date.utc=1499446419
 persist.sys.usb.config=none
